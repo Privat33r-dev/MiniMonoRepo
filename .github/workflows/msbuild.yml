@@ -9,7 +9,7 @@ on:
       - "master"
 
 env:
-  SOLUTION_FILE_PATH: Clock.sln
+  SOLUTION_FILE_PATH: "Projects Monorepo.sln"
   BUILD_CONFIGURATION: Release
   APP_NAME: Clock
 

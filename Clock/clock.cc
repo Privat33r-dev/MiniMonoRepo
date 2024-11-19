@@ -1,5 +1,6 @@
-#include "pch.h"
 #include "clock.h"
+
+#include <iostream>
 
 using std::cin;
 using std::cout;
@@ -13,7 +14,7 @@ using std::string;
 string Clock::FormatCenteredLabel(const string& label) {
   const int usableWidth = width - 2;  // Width without borders
 
-  int labelLength = label.length();
+  int labelLength = static_cast<int>(label.length());
   int spaces =
       std::max(0, usableWidth - labelLength);  // To ensure no negative padding
 
@@ -29,7 +30,7 @@ string Clock::FormatCenteredLabel(const string& label) {
 
 string Clock::FormatSimpleLabel(const string& label) {
   const int usableWidth = width - 3;  // Width without borders and left padding
-  int labelLength = label.length();
+  int labelLength = static_cast<int>(label.length());
   int spaces = std::max(0, usableWidth - labelLength);
 
   // Construct the label with a left border, label, spaces, and a right border
