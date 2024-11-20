@@ -5,7 +5,12 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AirGeadBanking", "AirGeadBanking\AirGeadBanking.vcxproj", "{048FE8E7-5FB3-4AD6-A978-1BAF2F6401E1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheClock", "Clock\Clock.vcxproj", "{9C1AC22E-1D41-4552-969E-3ACD2EED19AF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Clock", "Clock\Clock.vcxproj", "{9C1AC22E-1D41-4552-969E-3ACD2EED19AF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8} = {5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiniUtils", "MiniUtils\MiniUtils.vcxproj", "{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +36,14 @@ Global
 		{9C1AC22E-1D41-4552-969E-3ACD2EED19AF}.Release|x64.Build.0 = Release|x64
 		{9C1AC22E-1D41-4552-969E-3ACD2EED19AF}.Release|x86.ActiveCfg = Release|Win32
 		{9C1AC22E-1D41-4552-969E-3ACD2EED19AF}.Release|x86.Build.0 = Release|Win32
+		{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}.Debug|x64.ActiveCfg = Debug|x64
+		{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}.Debug|x64.Build.0 = Debug|x64
+		{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}.Debug|x86.ActiveCfg = Debug|Win32
+		{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}.Debug|x86.Build.0 = Debug|Win32
+		{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}.Release|x64.ActiveCfg = Release|x64
+		{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}.Release|x64.Build.0 = Release|x64
+		{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}.Release|x86.ActiveCfg = Release|Win32
+		{5CBC5B0B-F356-44EA-B9A8-D55E0D6A2ED8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
