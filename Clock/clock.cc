@@ -34,6 +34,8 @@ void Clock::DisplayTime() {
   PrintStyledBorder(true);
 }
 
+// TODO: check whether the formatter is leaking
+// Maybe even make a dependency injection for formatter
 Clock::Clock() : m_hours(0), m_minutes(0), m_seconds(0), m_formatter(m_width) {}
 
 Clock::Clock(int hours, int minutes, int seconds)

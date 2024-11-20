@@ -131,12 +131,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AirGeadBanking.cpp" />
+    <ClCompile Include="air_gead_banking_cli.cc" />
+    <ClCompile Include="main.cc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniUtils\MiniUtils.vcxproj">
       <Project>{5cbc5b0b-f356-44ea-b9a8-d55e0d6a2ed8}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="air_gead_banking_cli.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

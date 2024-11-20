@@ -14,6 +14,7 @@ class StringFormatter {
  public:
   StringFormatter();
   StringFormatter(int width);
+  string HorizontalSeparator(char borderChar = '*');
 
   // Format a label centered within the width, with customizable border.
   // Example: "*     SOME TEXT     *"
@@ -32,19 +33,22 @@ class StringFormatter {
   int m_width;
 
   // Helper to construct a formatted string with padding and border.
-  string BuildFormattedString(const string& label, int left_padding,
-                              int right_padding, char border_char) const;
+  string BuildFormattedString(const string& label, int leftPadding,
+                                   int rightPadding, char borderChar) const;
 
-  // Recursive function to handle truncation and printing.
-  string ProcessLabelWithTruncation(const string& label, int left_padding,
-                                   int right_padding, char border_char) const;
+  string BuildFullBorderFormattedString(const string& label,
+                                             int leftPadding, int rightPadding,
+                                             char borderChar) const;
+
+  string TruncateLabel(const string& label,
+                                        int maxWidth) const;
 
   struct StringMetrics {
     int usable_width;
     int label_length;
   };
 
-  StringMetrics CalculateStringMetrics(const std::string& label) const;
+  StringMetrics CalculateStringMetrics(const string& label) const;
 };
 
 // Clear the input buffer in case of invalid input,

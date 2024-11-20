@@ -22,34 +22,39 @@ using std::string;
 
 StringFormatter::StringMetrics StringFormatter::CalculateStringMetrics(
     const std::string& label) const {
-  const int min_padding = 2;                       // Borders (e.g., "*TEXT*")
-  const int usable_width = m_width - min_padding;  // Max text size
-  const int label_length = static_cast<int>(label.length());
-  return {usable_width, label_length};
+  const int minPadding = 2;                      // Borders (e.g., "*TEXT*")
+  const int usableWidth = m_width - minPadding;  // Max text size
+  const int labelLength = static_cast<int>(label.length());
+  return {usableWidth, labelLength};
 }
 
-std::string StringFormatter::BuildFormattedString(const std::string& label,
-                                                  int left_padding,
-                                                  int right_padding,
-                                                  char border_char) const {
-  return std::string(1, border_char) + std::string(left_padding, ' ') + label +
-         std::string(right_padding, ' ') + std::string(1, border_char);
-}
-
-std::string StringFormatter::ProcessLabelWithTruncation(
-    const std::string& label, int left_padding, int right_padding,
-    char border_char) const {
-  const int usable_width = m_width - 2;  // Space for the label minus borders
-  std::string truncated_label = label;
-
-  // If the label is too long, truncate it and append "..."
-  if (static_cast<int>(label.length()) > usable_width) {
-    truncated_label = label.substr(0, usable_width - 3) + "...";
+// Truncates the label to fit within a given width, appending "..." if
+// necessary.
+std::string StringFormatter::TruncateLabel(const std::string& label,
+                                           int maxWidth) const {
+  if (static_cast<int>(label.length()) > maxWidth) {
+    return label.substr(0, maxWidth - 3) + "...";
   }
+  return label;
+}
 
-  // Build the formatted string with the truncated label
-  return BuildFormattedString(truncated_label, left_padding, right_padding,
-                              border_char);
+// Builds a formatted string with space padding between the borders and the
+// label.
+std::string StringFormatter::BuildFormattedString(const std::string& label,
+                                                  int leftPadding,
+                                                  int rightPadding,
+                                                  char borderChar) const {
+  return std::string(1, borderChar) + std::string(leftPadding, ' ') + label +
+         std::string(rightPadding, ' ') + std::string(1, borderChar);
+}
+
+// Builds a formatted string with border characters around the label,
+// and spaces between the label and the borders.
+std::string StringFormatter::BuildFullBorderFormattedString(
+    const std::string& label, int leftPadding, int rightPadding,
+    char borderChar) const {
+  return std::string(leftPadding, borderChar) + " " + label + " " +
+         std::string(rightPadding, borderChar);
 }
 
 void ClearInput() {
@@ -60,40 +65,46 @@ void ClearInput() {
 
 // Public
 
-StringFormatter::StringFormatter() : m_width(0) {}
 StringFormatter::StringFormatter(int width) : m_width(width) {}
 
+string StringFormatter::HorizontalSeparator(char borderChar) {
+  return string(m_width, borderChar);
+}
+
 string StringFormatter::FormatCentered(const std::string& label,
-                                       const char& border_char) const {
-  auto [usable_width, label_length] = CalculateStringMetrics(label);
+                                       const char& borderChar) const {
+  auto [usableWidth, labelLength] = CalculateStringMetrics(label);
+  string truncatedLabel = TruncateLabel(label, usableWidth);
 
-  int total_padding = max(0, usable_width - label_length);
-  int left_padding = total_padding / 2;
-  int right_padding = total_padding - left_padding;
-
-  return ProcessLabelWithTruncation(label, left_padding, right_padding,
-                                    border_char);
+  int totalPadding = max(0, usableWidth - labelLength);
+  int leftPadding = totalPadding / 2;
+  int rightPadding = totalPadding - leftPadding;
+  return BuildFormattedString(truncatedLabel, leftPadding, rightPadding,
+                              borderChar);
 }
 
 std::string StringFormatter::FormatFullBorder(const std::string& label,
-                                              const char& border_char) const {
-  return ProcessLabelWithTruncation(label, 1, 1, border_char);
+                                              const char& borderChar) const {
+  auto [usableWidth, labelLength] = CalculateStringMetrics(label);
+  string truncatedLabel = TruncateLabel(label, usableWidth);
+
+  int totalPadding = max(0, usableWidth - labelLength);
+  int leftPadding = totalPadding / 2;
+  int rightPadding = totalPadding - leftPadding;
+  return BuildFullBorderFormattedString(truncatedLabel, leftPadding,
+                                        rightPadding, borderChar);
 }
 
 string StringFormatter::FormatSideBorder(const string& label,
                                          const char& border_char) {
-  const int min_padding = 2;                       // borders, e.g. "*TEXT*"
-  const int usable_width = m_width - min_padding;  // Max text size
-  const int label_length = static_cast<int>(label.length());
+  auto [usableWidth, labelLength] = CalculateStringMetrics(label);
+  string truncatedLabel = TruncateLabel(label, usableWidth);
+  int spaces =
+      std::max(0, usableWidth - labelLength - 1);  // subtract left padding
 
-  int labelLength = static_cast<int>(label.length());
-  int spaces = std::max(0, usable_width - labelLength);
-
-  // Construct the label with a left border, label, spaces, and a right border
-  return ProcessLabelWithTruncation(label, spaces > 0 ? 1 : 0, spaces,
-                                    border_char);
+  return BuildFormattedString(truncatedLabel, spaces > 0 ? 1 : 0, spaces,
+                              border_char);
 }
-
 
 // Table Formatter
 // Public
