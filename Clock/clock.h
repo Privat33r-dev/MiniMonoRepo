@@ -22,42 +22,42 @@ class Clock {
 
   // Print border composed of start characters, optionally formatted for 2
   // clocks
-  void PrintStyledBorder(bool doubleBorder = false);
+  void printStyledBorder(bool doubleBorder = false);
 
   // Get formatted time in 12- and 24-hour formats
-  string GetFormattedTime(bool is24HoursFormat) const;
+  string getFormattedTime(bool is24HoursFormat) const;
 
   // Adjust the time by carrying over values. For example, if seconds >= 60,
   // they will be converted to minutes.
-  void AdjustTime();
+  void adjustTime();
 
  public:
   Clock();
   Clock(int hours, int minutes, int seconds);
 
   // Display the time menu for user interaction
-  void DisplayMenu();
+  void displayMenu();
 
   // Print time in 12- and 24-hour formats
-  void DisplayTime();
+  void displayTime();
 
   // Get time from user in 24-hour format (hh:mm:ss)
-  void GetTimeFromUser();
+  void getTimeFromUser();
 
   // Execute user-selected instruction
-  bool ExecInstructionFromUser();
+  bool execInstructionFromUser();
 
   // Add one second to the time
-  void AddOneSecond();
+  void addOneSecond();
 
   // Add one minute to the time
-  void AddOneMinute();
+  void addOneMinute();
 
   // Add one hour to the time
-  void AddOneHour();
+  void addOneHour();
 
   // Start the command-line interface (CLI) for interacting with the clock
-  void StartCli();
+  void startCli();
 };
 
 #endif  // CLOCK_H

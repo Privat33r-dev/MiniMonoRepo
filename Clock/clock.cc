@@ -12,7 +12,7 @@ using std::string;
 
 using mini_utils::StringFormatter;
 
-void Clock::PrintStyledBorder(bool doubleBorder) {
+void Clock::printStyledBorder(bool doubleBorder) {
   string border(m_width, '*');
   cout << border;
   if (doubleBorder) {
@@ -21,17 +21,17 @@ void Clock::PrintStyledBorder(bool doubleBorder) {
   cout << endl;
 }
 
-void Clock::DisplayTime() {
-  PrintStyledBorder(true);
+void Clock::displayTime() {
+  printStyledBorder(true);
 
   cout << m_formatter.FormatCentered("12-Hour Clock") << kClockSeparator
        << m_formatter.FormatCentered("24-Hour Clock") << endl;
 
-  cout << m_formatter.FormatCentered(GetFormattedTime(false))
+  cout << m_formatter.FormatCentered(getFormattedTime(false))
        << kClockSeparator
-       << m_formatter.FormatCentered(GetFormattedTime(true)) << endl;
+       << m_formatter.FormatCentered(getFormattedTime(true)) << endl;
 
-  PrintStyledBorder(true);
+  printStyledBorder(true);
 }
 
 // TODO: check whether the formatter is leaking
@@ -41,16 +41,16 @@ Clock::Clock() : m_hours(0), m_minutes(0), m_seconds(0), m_formatter(m_width) {}
 Clock::Clock(int hours, int minutes, int seconds)
     : m_hours(hours), m_minutes(minutes), m_seconds(seconds), m_formatter(m_width) {}
 
-void Clock::DisplayMenu() {
-  PrintStyledBorder();
+void Clock::displayMenu() {
+  printStyledBorder();
   cout << m_formatter.FormatSideBorder("1 - Add One Hour") << endl
        << m_formatter.FormatSideBorder("2 - Add One Minute") << endl
        << m_formatter.FormatSideBorder("3 - Add One Second") << endl
        << m_formatter.FormatSideBorder("4 - Exit Program") << endl;
-  PrintStyledBorder();
+  printStyledBorder();
 }
 
-void Clock::GetTimeFromUser() {
+void Clock::getTimeFromUser() {
   // Declare temporary variables for user input of hours, minutes, and seconds
   unsigned short userInputHours, userInputMinutes, userInputSeconds;
 
@@ -79,7 +79,7 @@ void Clock::GetTimeFromUser() {
   m_seconds = userInputSeconds;
 }
 
-string Clock::GetFormattedTime(bool is24HoursFormat) const {
+string Clock::getFormattedTime(bool is24HoursFormat) const {
   std::ostringstream oss;
 
   string period = "";
@@ -96,22 +96,22 @@ string Clock::GetFormattedTime(bool is24HoursFormat) const {
   return oss.str();
 }
 
-bool Clock::ExecInstructionFromUser() {
+bool Clock::execInstructionFromUser() {
   int choice = mini_utils::GetValidatedInput<int>("Enter your choice: ", [](int input) {
     return input >= 1 && input <= 4;
   });
   switch (choice) {
     case 1:
-      AddOneHour();
-      DisplayTime();
+      addOneHour();
+      displayTime();
       break;
     case 2:
-      AddOneMinute();
-      DisplayTime();
+      addOneMinute();
+      displayTime();
       break;
     case 3:
-      AddOneSecond();
-      DisplayTime();
+      addOneSecond();
+      displayTime();
       break;
     case 4:
       cout << m_formatter.FormatSideBorder("Exiting program...") << endl;
@@ -120,22 +120,22 @@ bool Clock::ExecInstructionFromUser() {
   return true;
 }
 
-void Clock::AddOneSecond() {
+void Clock::addOneSecond() {
   ++m_seconds;
-  AdjustTime();
+  adjustTime();
 }
 
-void Clock::AddOneMinute() {
+void Clock::addOneMinute() {
   ++m_minutes;
-  AdjustTime();
+  adjustTime();
 }
 
-void Clock::AddOneHour() {
+void Clock::addOneHour() {
   ++m_hours;
-  AdjustTime();
+  adjustTime();
 }
 
-void Clock::AdjustTime() {
+void Clock::adjustTime() {
   // Helper lambda to adjust time units
   auto adjustUnit = [](unsigned short& unit, unsigned short maxLimit) {
     if (unit >= maxLimit) {
@@ -152,9 +152,9 @@ void Clock::AdjustTime() {
   adjustUnit(m_hours, 24);               // Adjust hours to 24-hour format
 }
 
-void Clock::StartCli() {
-  GetTimeFromUser();
+void Clock::startCli() {
+  getTimeFromUser();
   do {
-    DisplayMenu();
-  } while (ExecInstructionFromUser());
+    displayMenu();
+  } while (execInstructionFromUser());
 }

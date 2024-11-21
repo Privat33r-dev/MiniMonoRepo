@@ -7,7 +7,7 @@
 
 int main() {
   Clock clock = Clock();
-  clock.StartCli();
+  clock.startCli();
 
   return 0;
 }
