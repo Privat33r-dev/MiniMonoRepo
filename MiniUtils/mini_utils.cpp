@@ -71,6 +71,11 @@ string StringFormatter::HorizontalSeparator(char borderChar) {
   return string(m_width, borderChar);
 }
 
+string StringFormatter::HorizontalSeparatorWithSides(char separatorChar,
+                                                     char sideChar) {
+  return sideChar + string(m_width - 2, separatorChar) + sideChar;
+}
+
 string StringFormatter::FormatCentered(const std::string& label,
                                        const char& borderChar) const {
   auto [usableWidth, labelLength] = CalculateStringMetrics(label);
@@ -111,8 +116,16 @@ string StringFormatter::FormatSideBorder(const string& label,
 
 TableFormatter::TableFormatter(int width) : m_width(width) {}
 
-void TableFormatter::SetColumnWidths(const vector<int>& widths) {
+bool TableFormatter::SetColumnWidths(const vector<int>& widths) {
+  int sum = 0;
+  for (auto width : widths) {
+    sum += width;
+  }
+  if (sum > m_width) {
+    return false;
+  }
   m_col_widths = widths;
+  return true;
 }
 
 void TableFormatter::SetHeaders(const vector<string>& headers) {
@@ -126,8 +139,12 @@ void TableFormatter::AddRow(const vector<string>& row) {
 string TableFormatter::Render() const {
   string result;
   string border = "+";
+  bool isFirstWidth = true;
   for (int width : m_col_widths) {
-    border += string(width + 2, '-') + "+";
+    int adjustedWidth = isFirstWidth ? width : width - 2;
+    isFirstWidth = false;
+
+    border += string(adjustedWidth, '-') + "+";
   }
   border += "\n";
 
@@ -158,12 +175,21 @@ string TableFormatter::TruncateString(const string& str, int width) const {
 
 string TableFormatter::FormatRow(const vector<string>& row) const {
   string result = "|";
+  bool isFirstWidth = true;
   for (size_t i = 0; i < row.size(); ++i) {
-    int col_width = m_col_widths[i];
-    string cell = TruncateString(row[i], col_width);
-    result += " " + cell + string(col_width - cell.length(), ' ') + " |";
+    int width = m_col_widths[i];
+    int adjustedWidth = isFirstWidth ? width - 2 : width - 4;
+    isFirstWidth = false;
+
+    string cell = TruncateString(row[i], adjustedWidth);
+    result += " " + cell + string(adjustedWidth - cell.length(), ' ') + " |";
   }
   return result;
+}
+
+// Checks whether provided value is a positive real number
+bool isPositiveRealNum(double number) {
+  return std::isnormal(number) && number > 0;
 }
 
 }  // namespace mini_utils

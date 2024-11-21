@@ -10,11 +10,16 @@ namespace mini_utils {
 using std::string;
 using std::vector;
 
+// TODO: formatter standard class
+// setWidth, width_, truncate
+
 class StringFormatter {
  public:
   StringFormatter();
   StringFormatter(int width);
   string HorizontalSeparator(char borderChar = '*');
+  string HorizontalSeparatorWithSides(char separatorChar = '*',
+                                      char sideChar ='|');
 
   // Format a label centered within the width, with customizable border.
   // Example: "*     SOME TEXT     *"
@@ -56,8 +61,11 @@ class StringFormatter {
 void ClearInput();
 
 // Get validated input from user using provided validator
+// The `criteriaDescription` parameter should describe the validation criteria
+// (e.g. "positive integer"). It's used in error messages when validation fails.
 template <typename T>
-T GetValidatedInput(const string& prompt, std::function<bool(T)> validator) {
+T GetValidatedInput(const string& prompt, std::function<bool(T)> validator,
+                    const string& criteriaDescription = "value") {
   T input;
   while (true) {
     std::cout << prompt;
@@ -66,13 +74,28 @@ T GetValidatedInput(const string& prompt, std::function<bool(T)> validator) {
     // Check if input is valid
     if (std::cin.fail()) {
       ClearInput();
-      std::cout << "Invalid input. Please try again." << std::endl;
-    } else if (validator(input)) {
-      break;  // Input is valid and passes the validator function
-    } else {
-      std::cout << "Input does not meet the criteria. Please try again."
-                << std::endl;
+      std::cout << "Invalid input. Please enter a valid " << criteriaDescription
+                << "." << std::endl;
+      continue;
     }
+
+    // Check if there are extra characters (like "1 2 3")
+    if (std::cin.peek() != '\n') {
+      ClearInput();
+      std::cout << "Only one value is allowed. Please enter a valid "
+                << criteriaDescription << "." << std::endl;
+      continue;
+    }
+
+    // Check if input meets custom criteria
+    if (!validator(input)) {
+      std::cout << "Input is out of the accepted range or format. Please enter "
+                   "a valid "
+                << criteriaDescription << "." << std::endl;
+      continue;
+    }
+
+    break;  // Input is valid and passes the validator function
   }
   return input;
 }
@@ -82,7 +105,7 @@ class TableFormatter {
  public:
   TableFormatter(int width);
   // Mind that minimal terminal size in columns: 80
-  void SetColumnWidths(const vector<int>& widths);
+  bool SetColumnWidths(const vector<int>& widths);
   void SetHeaders(const vector<string>& headers);
 
   // Add a row to the table
@@ -103,6 +126,9 @@ class TableFormatter {
   // Helper: truncate a string if it exceeds the width
   string TruncateString(const string& str, int width) const;
 };
+
+// Checks whether provided value is a positive real number
+bool isPositiveRealNum(double number);
 
 }  // namespace mini_utils
 #endif  // MINI_UTILS_H
