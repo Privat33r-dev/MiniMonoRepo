@@ -7,6 +7,8 @@
 #include <string>
 #include <functional>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 
 namespace mini_utils {
@@ -111,12 +113,19 @@ string StringFormatter::FormatSideBorder(const string& label,
                               border_char);
 }
 
+string StringFormatter::toStringWithPrecision(double value, int precision) {
+  std::ostringstream oss;
+  oss << std::fixed << std::setprecision(precision) << value;
+  return oss.str();
+}
+
+
 // Table Formatter
 // Public
 
 TableFormatter::TableFormatter(int width) : m_width(width) {}
 
-bool TableFormatter::SetColumnWidths(const vector<int>& widths) {
+bool TableFormatter::setColumnWidths(const vector<int>& widths) {
   int sum = 0;
   for (auto width : widths) {
     sum += width;
@@ -128,15 +137,19 @@ bool TableFormatter::SetColumnWidths(const vector<int>& widths) {
   return true;
 }
 
-void TableFormatter::SetHeaders(const vector<string>& headers) {
+void TableFormatter::setHeaders(const vector<string>& headers) {
   m_headers = headers;
 }
 
-void TableFormatter::AddRow(const vector<string>& row) {
+void TableFormatter::addRow(const vector<string>& row) {
   m_rows.push_back(row);
 }
 
-string TableFormatter::Render() const {
+void TableFormatter::clearRows() {
+  m_rows.clear();
+}
+
+string TableFormatter::render() const {
   string result;
   string border = "+";
   bool isFirstWidth = true;

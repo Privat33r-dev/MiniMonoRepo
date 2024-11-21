@@ -33,6 +33,9 @@ class StringFormatter {
   // Format the label with a fixed one-space padding on the left: "* TEXT     *"
   string FormatSideBorder(const string& label, const char& border_char = '*');
 
+  // Format double to string with precision
+  string toStringWithPrecision(double value, int precision = 2);
+
  private:
   // Width within which the text is rendered
   int m_width;
@@ -105,14 +108,17 @@ class TableFormatter {
  public:
   TableFormatter(int width);
   // Mind that minimal terminal size in columns: 80
-  bool SetColumnWidths(const vector<int>& widths);
-  void SetHeaders(const vector<string>& headers);
+  bool setColumnWidths(const vector<int>& widths);
+  void setHeaders(const vector<string>& headers);
 
   // Add a row to the table
-  void AddRow(const vector<string>& row);
+  void addRow(const vector<string>& row);
+
+  // Clear all rows
+  void clearRows();
 
   // Render the entire table as a formatted string
-  string Render() const;
+  string render() const;
 
  private:
   int m_width;                    // Total table width
