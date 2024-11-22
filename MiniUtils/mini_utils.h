@@ -16,9 +16,9 @@ using std::vector;
 class StringFormatter {
  public:
   StringFormatter(int width);
-  string horizontalSeparator(char borderChar = '*');
+  string horizontalSeparator(char borderChar = '*') const;
   string horizontalSeparatorWithSides(char separatorChar = '*',
-                                      char sideChar ='|');
+                                      char sideChar = '|') const;
 
   // Format a label centered within the width, with customizable border.
   // Example: "*     SOME TEXT     *"
@@ -30,7 +30,8 @@ class StringFormatter {
                           const char& border_char = '*') const;
 
   // Format the label with a fixed one-space padding on the left: "* TEXT     *"
-  string formatSideBorder(const string& label, const char& border_char = '*');
+  string formatSideBorder(const string& label,
+                          const char& border_char = '*') const;
 
   // Format double to string with precision
   string toStringWithPrecision(double value, int precision = 2);
@@ -96,6 +97,7 @@ T getValidatedInput(const string& prompt, std::function<bool(T)> validator,
 
     // Check if input meets custom criteria
     if (!validator(input)) {
+      clearInput();
       std::cout << "Input is out of the accepted range or format. Please enter "
                    "a valid "
                 << criteriaDescription << "." << std::endl;

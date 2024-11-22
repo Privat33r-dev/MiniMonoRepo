@@ -69,12 +69,12 @@ void clearInput() {
 
 StringFormatter::StringFormatter(int width) : m_width(width) {}
 
-string StringFormatter::horizontalSeparator(char borderChar) {
+string StringFormatter::horizontalSeparator(char borderChar) const {
   return string(m_width, borderChar);
 }
 
 string StringFormatter::horizontalSeparatorWithSides(char separatorChar,
-                                                     char sideChar) {
+                                                     char sideChar) const {
   return sideChar + string(m_width - 2, separatorChar) + sideChar;
 }
 
@@ -106,7 +106,7 @@ string StringFormatter::formatFullBorder(const string& label,
 }
 
 string StringFormatter::formatSideBorder(const string& label,
-                                         const char& border_char) {
+                                         const char& border_char) const {
   auto [usableWidth, labelLength] = calculateStringMetrics(label);
   string truncatedLabel = truncateLabel(label, usableWidth);
   int spaces =
