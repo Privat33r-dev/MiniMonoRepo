@@ -25,7 +25,9 @@ class AirgeadBankingCli {
   const int MIN_INVEST_YEARS = 1;
   const int MAX_INVEST_YEARS = 50;
   int m_width;
-  double m_principal, m_monthlyDeposit, m_annualRate;
+  double m_principal;
+  double m_monthlyDeposit;
+  double m_annualRate;
   int m_years;
   mini_utils::StringFormatter m_string_formatter;
   mini_utils::TableFormatter m_table_formatter;

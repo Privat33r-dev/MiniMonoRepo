@@ -15,23 +15,22 @@ using std::vector;
 
 class StringFormatter {
  public:
-  StringFormatter();
   StringFormatter(int width);
-  string HorizontalSeparator(char borderChar = '*');
-  string HorizontalSeparatorWithSides(char separatorChar = '*',
+  string horizontalSeparator(char borderChar = '*');
+  string horizontalSeparatorWithSides(char separatorChar = '*',
                                       char sideChar ='|');
 
   // Format a label centered within the width, with customizable border.
   // Example: "*     SOME TEXT     *"
-  string FormatCentered(const string& label,
+  string formatCentered(const string& label,
                         const char& border_char = '*') const;
 
   // Format a label with a fixed one-space padding: "***** TEXT *****".
-  string FormatFullBorder(const string& label,
+  string formatFullBorder(const string& label,
                           const char& border_char = '*') const;
 
   // Format the label with a fixed one-space padding on the left: "* TEXT     *"
-  string FormatSideBorder(const string& label, const char& border_char = '*');
+  string formatSideBorder(const string& label, const char& border_char = '*');
 
   // Format double to string with precision
   string toStringWithPrecision(double value, int precision = 2);
@@ -41,14 +40,19 @@ class StringFormatter {
   int m_width;
 
   // Helper to construct a formatted string with padding and border.
-  string BuildFormattedString(const string& label, int leftPadding,
+  string buildFormattedString(const string& label, int leftPadding,
                                    int rightPadding, char borderChar) const;
 
-  string BuildFullBorderFormattedString(const string& label,
+  string buildFullBorderFormattedString(const string& label,
                                              int leftPadding, int rightPadding,
                                              char borderChar) const;
 
-  string TruncateLabel(const string& label,
+
+  string buildCentered(const string& label, const char& borderChar,
+                             string (StringFormatter::*formatBuilder)(
+                                 const string&, int, int, char) const) const;
+
+  string truncateLabel(const string& label,
                                         int maxWidth) const;
 
   struct StringMetrics {
@@ -56,18 +60,18 @@ class StringFormatter {
     int label_length;
   };
 
-  StringMetrics CalculateStringMetrics(const string& label) const;
+  StringMetrics calculateStringMetrics(const string& label) const;
 };
 
 // Clear the input buffer in case of invalid input,
 // ensuring that subsequent input operations are not affected.
-void ClearInput();
+void clearInput();
 
 // Get validated input from user using provided validator
 // The `criteriaDescription` parameter should describe the validation criteria
 // (e.g. "positive integer"). It's used in error messages when validation fails.
 template <typename T>
-T GetValidatedInput(const string& prompt, std::function<bool(T)> validator,
+T getValidatedInput(const string& prompt, std::function<bool(T)> validator,
                     const string& criteriaDescription = "value") {
   T input;
   while (true) {
@@ -76,7 +80,7 @@ T GetValidatedInput(const string& prompt, std::function<bool(T)> validator,
 
     // Check if input is valid
     if (std::cin.fail()) {
-      ClearInput();
+      clearInput();
       std::cout << "Invalid input. Please enter a valid " << criteriaDescription
                 << "." << std::endl;
       continue;
@@ -84,7 +88,7 @@ T GetValidatedInput(const string& prompt, std::function<bool(T)> validator,
 
     // Check if there are extra characters (like "1 2 3")
     if (std::cin.peek() != '\n') {
-      ClearInput();
+      clearInput();
       std::cout << "Only one value is allowed. Please enter a valid "
                 << criteriaDescription << "." << std::endl;
       continue;
@@ -127,10 +131,10 @@ class TableFormatter {
   vector<vector<string>> m_rows;  // Rows of data
 
   // Helper: format a single row as a string
-  string FormatRow(const vector<string>& row) const;
+  string formatRow(const vector<string>& row) const;
 
   // Helper: truncate a string if it exceeds the width
-  string TruncateString(const string& str, int width) const;
+  string truncateString(const string& str, int width) const;
 };
 
 // Checks whether provided value is a positive real number

@@ -1,7 +1,5 @@
 #ifndef CLOCK_H
 #define CLOCK_H
-#include "mini_utils.h"
-
 #include <algorithm>
 #include <functional>
 #include <iomanip>
@@ -9,6 +7,8 @@
 #include <limits>
 #include <sstream>
 #include <string>
+
+#include "mini_utils.h"
 
 using std::string;
 

@@ -1,3 +1,6 @@
+/*
+ * Airgead Banking Deposit Calculator
+ */
 #include "airgead_banking_cli.h"
 
 #include <cmath>
@@ -53,16 +56,16 @@ void AirgeadBankingCli::getValuesFromUser() {
   const int max_years = MAX_INVEST_YEARS;
 
   // TODO: Bug or feature: hexadecimal input support
-  m_principal = mini_utils::GetValidatedInput<double>(
+  m_principal = mini_utils::getValidatedInput<double>(
       "Initial Investment Amount: ", mini_utils::isPositiveRealNum,
       "positive real number");
-  m_monthlyDeposit = mini_utils::GetValidatedInput<double>(
+  m_monthlyDeposit = mini_utils::getValidatedInput<double>(
       "Monthly Deposit: ", mini_utils::isPositiveRealNum,
       "positive real number");
-  m_annualRate = mini_utils::GetValidatedInput<double>(
+  m_annualRate = mini_utils::getValidatedInput<double>(
       "Annual Interest Rate (in %): ", mini_utils::isPositiveRealNum,
       "positive real number");
-  m_years = mini_utils::GetValidatedInput<int>(
+  m_years = mini_utils::getValidatedInput<int>(
       "Investment Term (Years): ",
       [min_years, max_years](int input) {
         return input >= min_years && input <= max_years;
@@ -72,8 +75,8 @@ void AirgeadBankingCli::getValuesFromUser() {
 }
 
 string AirgeadBankingCli::getTable(bool withDeposits) {
-  std::vector<std::string> headers = {"Year", "End of the Year Balance",
-                                      "End of the Year Earned Interest"};
+  std::vector<string> headers = {"Year", "End of the Year Balance",
+                                 "End of the Year Earned Interest"};
   m_table_formatter.setHeaders(headers);
   if (!m_table_formatter.setColumnWidths({10, 35, 35})) {
     cout << "Unexpected error happened: unable to set table column widths."
@@ -84,7 +87,7 @@ string AirgeadBankingCli::getTable(bool withDeposits) {
   const double MONTHLY_DEPOSIT = withDeposits ? m_monthlyDeposit : 0;
   const double ANNUAL_DEPOSIT = MONTHLY_DEPOSIT * 12;
   for (int currentYear = 1; currentYear < m_years + 1; ++currentYear) {
-    std::string yearRow = std::to_string(currentYear);
+    string yearRow = std::to_string(currentYear);
 
     // Calculate year-end balance
     long double yearEndBalance = DepositCalculator::calculateCompoundInterest(
@@ -94,9 +97,9 @@ string AirgeadBankingCli::getTable(bool withDeposits) {
     double earnedInterest = yearEndBalance - (lastYearBalance + ANNUAL_DEPOSIT);
 
     // Convert to strings for table formatting
-    std::string formattedEndYearBalance =
+    string formattedEndYearBalance =
         "$" + m_string_formatter.toStringWithPrecision(yearEndBalance);
-    std::string formattedEndYearInterest =
+    string formattedEndYearInterest =
         "$" + m_string_formatter.toStringWithPrecision(earnedInterest);
 
     // Add row to the table
@@ -106,9 +109,9 @@ string AirgeadBankingCli::getTable(bool withDeposits) {
     lastYearBalance = yearEndBalance;
   }
   string outSuffix = (withDeposits ? "" : "out");
-  string header = m_string_formatter.HorizontalSeparatorWithSides('-', '+') +
+  string header = m_string_formatter.horizontalSeparatorWithSides('-', '+') +
                   "\n" +
-                  m_string_formatter.FormatCentered(
+                  m_string_formatter.formatCentered(
                       "Balance and Interest With" + outSuffix +
                           " Additional Monthly Deposits",
                       '|') +
@@ -127,11 +130,11 @@ void AirgeadBankingCli::pressToContinue() {
 
 void AirgeadBankingCli::startCli() {
   const char FORMAT_CHAR = '-';
-  cout << m_string_formatter.HorizontalSeparator(FORMAT_CHAR) << endl
-       << m_string_formatter.FormatFullBorder("Airgead Investment Calculator",
+  cout << m_string_formatter.horizontalSeparator(FORMAT_CHAR) << endl
+       << m_string_formatter.formatFullBorder("Airgead Investment Calculator",
                                               FORMAT_CHAR)
        << endl
-       << m_string_formatter.HorizontalSeparator(FORMAT_CHAR) << endl
+       << m_string_formatter.horizontalSeparator(FORMAT_CHAR) << endl
        << endl;
 
   getValuesFromUser();

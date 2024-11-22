@@ -22,8 +22,8 @@ using std::string;
 
 // Private
 
-StringFormatter::StringMetrics StringFormatter::CalculateStringMetrics(
-    const std::string& label) const {
+StringFormatter::StringMetrics StringFormatter::calculateStringMetrics(
+    const string& label) const {
   const int minPadding = 2;                      // Borders (e.g., "*TEXT*")
   const int usableWidth = m_width - minPadding;  // Max text size
   const int labelLength = static_cast<int>(label.length());
@@ -32,7 +32,7 @@ StringFormatter::StringMetrics StringFormatter::CalculateStringMetrics(
 
 // Truncates the label to fit within a given width, appending "..." if
 // necessary.
-std::string StringFormatter::TruncateLabel(const std::string& label,
+string StringFormatter::truncateLabel(const string& label,
                                            int maxWidth) const {
   if (static_cast<int>(label.length()) > maxWidth) {
     return label.substr(0, maxWidth - 3) + "...";
@@ -42,24 +42,24 @@ std::string StringFormatter::TruncateLabel(const std::string& label,
 
 // Builds a formatted string with space padding between the borders and the
 // label.
-std::string StringFormatter::BuildFormattedString(const std::string& label,
+string StringFormatter::buildFormattedString(const string& label,
                                                   int leftPadding,
                                                   int rightPadding,
                                                   char borderChar) const {
-  return std::string(1, borderChar) + std::string(leftPadding, ' ') + label +
-         std::string(rightPadding, ' ') + std::string(1, borderChar);
+  return string(1, borderChar) + string(leftPadding, ' ') + label +
+         string(rightPadding, ' ') + string(1, borderChar);
 }
 
 // Builds a formatted string with border characters around the label,
 // and spaces between the label and the borders.
-std::string StringFormatter::BuildFullBorderFormattedString(
-    const std::string& label, int leftPadding, int rightPadding,
+string StringFormatter::buildFullBorderFormattedString(
+    const string& label, int leftPadding, int rightPadding,
     char borderChar) const {
-  return std::string(leftPadding, borderChar) + " " + label + " " +
-         std::string(rightPadding, borderChar);
+  return string(leftPadding, borderChar) + " " + label + " " +
+         string(rightPadding, borderChar);
 }
 
-void ClearInput() {
+void clearInput() {
   cin.clear();  // Reset the error flags on std::cin
   cin.ignore(std::numeric_limits<std::streamsize>::max(),
              '\n');  // Discard invalid input in the buffer
@@ -69,47 +69,50 @@ void ClearInput() {
 
 StringFormatter::StringFormatter(int width) : m_width(width) {}
 
-string StringFormatter::HorizontalSeparator(char borderChar) {
+string StringFormatter::horizontalSeparator(char borderChar) {
   return string(m_width, borderChar);
 }
 
-string StringFormatter::HorizontalSeparatorWithSides(char separatorChar,
+string StringFormatter::horizontalSeparatorWithSides(char separatorChar,
                                                      char sideChar) {
   return sideChar + string(m_width - 2, separatorChar) + sideChar;
 }
 
-string StringFormatter::FormatCentered(const std::string& label,
-                                       const char& borderChar) const {
-  auto [usableWidth, labelLength] = CalculateStringMetrics(label);
-  string truncatedLabel = TruncateLabel(label, usableWidth);
+string StringFormatter::buildCentered(
+    const string& label, const char& borderChar,
+    string (StringFormatter::*formatBuilder)(const string&, int, int,
+                                                  char) const) const {
+  auto [usableWidth, labelLength] = calculateStringMetrics(label);
+  string truncatedLabel = truncateLabel(label, usableWidth);
 
-  int totalPadding = max(0, usableWidth - labelLength);
+  int totalPadding = std::max(0, usableWidth - labelLength);
   int leftPadding = totalPadding / 2;
   int rightPadding = totalPadding - leftPadding;
-  return BuildFormattedString(truncatedLabel, leftPadding, rightPadding,
-                              borderChar);
+
+  return (this->*formatBuilder)(truncatedLabel, leftPadding, rightPadding,
+                                borderChar);
 }
 
-std::string StringFormatter::FormatFullBorder(const std::string& label,
+string StringFormatter::formatCentered(const string& label,
+                                            const char& borderChar) const {
+  return buildCentered(label, borderChar,
+                      &StringFormatter::buildFormattedString);
+}
+
+string StringFormatter::formatFullBorder(const string& label,
                                               const char& borderChar) const {
-  auto [usableWidth, labelLength] = CalculateStringMetrics(label);
-  string truncatedLabel = TruncateLabel(label, usableWidth);
-
-  int totalPadding = max(0, usableWidth - labelLength);
-  int leftPadding = totalPadding / 2;
-  int rightPadding = totalPadding - leftPadding;
-  return BuildFullBorderFormattedString(truncatedLabel, leftPadding,
-                                        rightPadding, borderChar);
+  return buildCentered(label, borderChar,
+                      &StringFormatter::buildFullBorderFormattedString);
 }
 
-string StringFormatter::FormatSideBorder(const string& label,
+string StringFormatter::formatSideBorder(const string& label,
                                          const char& border_char) {
-  auto [usableWidth, labelLength] = CalculateStringMetrics(label);
-  string truncatedLabel = TruncateLabel(label, usableWidth);
+  auto [usableWidth, labelLength] = calculateStringMetrics(label);
+  string truncatedLabel = truncateLabel(label, usableWidth);
   int spaces =
       std::max(0, usableWidth - labelLength - 1);  // subtract left padding
 
-  return BuildFormattedString(truncatedLabel, spaces > 0 ? 1 : 0, spaces,
+  return buildFormattedString(truncatedLabel, spaces > 0 ? 1 : 0, spaces,
                               border_char);
 }
 
@@ -164,13 +167,13 @@ string TableFormatter::render() const {
   // Add headers
   result += border;
   if (!m_headers.empty()) {
-    result += FormatRow(m_headers) + "\n";
+    result += formatRow(m_headers) + "\n";
     result += border;
   }
 
   // Add rows
   for (const auto& row : m_rows) {
-    result += FormatRow(row) + "\n";
+    result += formatRow(row) + "\n";
   }
   result += border;
 
@@ -179,14 +182,14 @@ string TableFormatter::render() const {
 
 // Private
 
-string TableFormatter::TruncateString(const string& str, int width) const {
+string TableFormatter::truncateString(const string& str, int width) const {
   if (static_cast<int>(str.length()) > width) {
     return str.substr(0, width - 3) + "...";
   }
   return str;
 }
 
-string TableFormatter::FormatRow(const vector<string>& row) const {
+string TableFormatter::formatRow(const vector<string>& row) const {
   string result = "|";
   bool isFirstWidth = true;
   for (size_t i = 0; i < row.size(); ++i) {
@@ -194,7 +197,7 @@ string TableFormatter::FormatRow(const vector<string>& row) const {
     int adjustedWidth = isFirstWidth ? width - 2 : width - 4;
     isFirstWidth = false;
 
-    string cell = TruncateString(row[i], adjustedWidth);
+    string cell = truncateString(row[i], adjustedWidth);
     result += " " + cell + string(adjustedWidth - cell.length(), ' ') + " |";
   }
   return result;
