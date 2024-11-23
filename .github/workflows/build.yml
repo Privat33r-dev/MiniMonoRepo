@@ -3,15 +3,15 @@ name: MSBuild
 on:
   push:
     paths-ignore:
-      - "README.md"
-      - "LICENSE"
+      - "**/README.md"
+      - "LICENSE.txt"
       - ".gitignore"
     branches:
       - master
   pull_request:
     paths-ignore:
-      - "README.md"
-      - "LICENSE"
+      - "**/README.md"
+      - "LICENSE.txt"
       - ".gitignore"
     branches:
       - master
