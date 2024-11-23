@@ -7,7 +7,7 @@ namespace item_tracker {
 // ItemTracker:Public
 bool ItemTracker::LoadItemsFromFile(const std::string& file_name) {
   std::ifstream input_file(file_name);
-  if (!input_file.is_open()) {
+  if (!input_file.is_open() || input_file.fail()) {
     return false;
   }
   return ImportFromStream(input_file);
@@ -16,7 +16,8 @@ bool ItemTracker::LoadItemsFromFile(const std::string& file_name) {
 bool ItemTracker::ImportFromStream(std::istream& input_stream) {
   std::string line;
   while (getline(input_stream, line)) {
-    if (!line.empty()) ++items_[line];
+    std::string trimmed_line = mini_utils::trim(line);
+    if (!trimmed_line.empty()) ++items_[trimmed_line];
   }
   return true;
 }
