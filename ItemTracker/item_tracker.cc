@@ -42,14 +42,18 @@ bool ItemTracker::ExportToStream(std::ostream& output_stream) const {
   return true;
 }
 
-std::unordered_map<std::string, int> ItemTracker::GetItems() const { return items_; }
+std::unordered_map<std::string, int> ItemTracker::GetItems() const {
+  return items_;
+}
 // /ItemTracker
 
 // ItemTrackerCli:Public
 ItemTrackerCli::ItemTrackerCli(const std::string& input_file_name,
-                               const std::string& output_file_name, int max_console_width)
+                               const std::string& output_file_name,
+                               int max_console_width)
     : input_file_name_(input_file_name),
-      output_file_name_(output_file_name), formatter_(max_console_width) {}
+      output_file_name_(output_file_name),
+      formatter_(max_console_width) {}
 
 void ItemTrackerCli::Start() {
   if (!item_tracker_.LoadItemsFromFile(input_file_name_)) {
@@ -119,11 +123,20 @@ void ItemTrackerCli::HandleMenuChoice(int user_choice) const {
 
 // Prompts the user for an item and displays its frequency
 void ItemTrackerCli::FindItemFrequency() const {
-  std::string user_input;
+  std::string user_input = "";
   std::cout << "Please, enter item to search for: ";
-  getline(std::cin, user_input);
+  while (user_input.empty()) getline(std::cin, user_input);
+
   int frequency = item_tracker_.GetWordFrequency(user_input);
-  std::cout << user_input << " encountered " << frequency << " times.\n";
+  const std::string s_suffix = frequency != 1 ? "s" : "";
+
+  if (frequency == 0) {
+    std::cout << "Item \"" << user_input << "\" is not present in the list."
+              << std::endl;
+  } else {
+    std::cout << "Item \"" << user_input << "\" encountered " << frequency
+              << " time" << s_suffix << "." << std::endl;
+  }
 }
 
 // Displays all items with their corresponding frequencies
@@ -139,7 +152,8 @@ void ItemTrackerCli::ListItemsWithFrequencies() const {
 void ItemTrackerCli::ListItemHistogram() const {
   const auto& items = item_tracker_.GetItems();
   for (const auto& item : items) {
-    std::cout << item.first << " " << std::string(item.second, '#') << std::endl;
+    std::cout << item.first << " " << std::string(item.second, '#')
+              << std::endl;
   }
 }
 // /ItemTrackerCli
