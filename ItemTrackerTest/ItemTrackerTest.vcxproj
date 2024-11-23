@@ -52,7 +52,8 @@
     <SubSystem>Console</SubSystem>
     <OptimizeReferences Condition="'$(Configuration)'=='Release'">true</OptimizeReferences>
     <EnableCOMDATFolding Condition="'$(Configuration)'=='Release'">true</EnableCOMDATFolding>
-    <AdditionalDependencies>$(ProjectDir)..\ItemTracker\$(Platform)\$(Configuration)\item_tracker.obj;%(AdditionalDependencies)</AdditionalDependencies>
+	<AdditionalDependencies Condition="'$(Platform)'=='Win32'">$(ProjectDir)..\ItemTracker\$(Configuration)\item_tracker.obj;%(AdditionalDependencies)</AdditionalDependencies>
+	<AdditionalDependencies Condition="'$(Platform)'=='x64'">$(ProjectDir)..\ItemTracker\$(Platform)\$(Configuration)\item_tracker.obj;%(AdditionalDependencies)</AdditionalDependencies>
   </Link>
 </ItemDefinitionGroup>
   <ItemGroup>
