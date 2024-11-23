@@ -1,6 +1,7 @@
 // MiniUtils.cpp : Defines the functions for the static library.
 #include "mini_utils.h"
 
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
