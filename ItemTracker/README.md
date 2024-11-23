@@ -1,5 +1,35 @@
 # Item Tracker CLI
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Part below is a part of the assignment
+
 ## Project Summary
 
 This project is a command-line tool designed to track and analyze items from an input file or stream. At its core, the program counts occurrences of items and provides users with functionality to search for specific items, list all tracked items with their frequencies, and even display a histogram. The goal of this project was to create a simple yet powerful utility to manage and visualize item frequency data while adhering to clean and maintainable coding practices.

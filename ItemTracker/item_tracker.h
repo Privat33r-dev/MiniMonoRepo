@@ -18,6 +18,12 @@ class ItemTracker {
   // Get frequency of the word in the internal items list
   int GetWordFrequency(const std::string& word) const;
 
+  // Export item data to a file
+  bool ExportItemsToFile(const std::string& file_name) const;
+
+  // Export item data to a stream
+  bool ExportToStream(std::ostream& output_stream) const;
+
   // Get list of stored items
   std::unordered_map<std::string, int> GetItems() const;
 
@@ -27,7 +33,8 @@ class ItemTracker {
 
 class ItemTrackerCli {
  public:
-  ItemTrackerCli(const std::string& file_name, int max_console_width);
+  ItemTrackerCli(const std::string& input_file_name,
+                 const std::string& output_file_name, int max_console_width);
 
   // Start the CLI, loading items from the file and displaying the menu.
   void Start();
@@ -39,7 +46,8 @@ class ItemTrackerCli {
   void ListItemsWithFrequencies() const;
   void ListItemHistogram() const;
 
-  std::string file_name_;
+  std::string input_file_name_;
+  std::string output_file_name_;
   ItemTracker item_tracker_;
   mini_utils::StringFormatter formatter_;
 };

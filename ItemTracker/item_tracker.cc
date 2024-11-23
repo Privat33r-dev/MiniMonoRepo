@@ -27,17 +27,40 @@ int ItemTracker::GetWordFrequency(const std::string& word) const {
   return found_item == items_.end() ? 0 : found_item->second;
 }
 
+bool ItemTracker::ExportItemsToFile(const std::string& file_name) const {
+  std::ofstream output_file(file_name);
+  if (!output_file.is_open() || output_file.fail()) {
+    return false;
+  }
+  return ExportToStream(output_file);
+}
+
+bool ItemTracker::ExportToStream(std::ostream& output_stream) const {
+  for (const auto& item : items_) {
+    output_stream << item.first << " " << item.second << "\n";
+  }
+  return true;
+}
+
 std::unordered_map<std::string, int> ItemTracker::GetItems() const { return items_; }
 // /ItemTracker
 
 // ItemTrackerCli:Public
-ItemTrackerCli::ItemTrackerCli(const std::string& file_name, int width)
-    : file_name_(file_name), formatter_(width) {}
+ItemTrackerCli::ItemTrackerCli(const std::string& input_file_name,
+                               const std::string& output_file_name, int max_console_width)
+    : input_file_name_(input_file_name),
+      output_file_name_(output_file_name), formatter_(max_console_width) {}
 
 void ItemTrackerCli::Start() {
-  if (!item_tracker_.LoadItemsFromFile(file_name_)) {
-    std::cerr << "Error: Unable to import items from file: " << file_name_
-              << "\n";
+  if (!item_tracker_.LoadItemsFromFile(input_file_name_)) {
+    std::cerr << "Error: Unable to import items from file: " << input_file_name_
+              << std::endl;
+    return;
+  }
+
+  if (!item_tracker_.ExportItemsToFile(output_file_name_)) {
+    std::cerr << "Error: Unable to export items to a file: "
+              << output_file_name_ << std::endl;
     return;
   }
 

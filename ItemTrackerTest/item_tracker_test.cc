@@ -1,9 +1,12 @@
+// Important: pch.h import MUST always be on top
 #include "pch.h"
+
+#include "item_tracker.h"
+
 #include <gtest/gtest.h>
 
 #include <sstream>
 
-#include "item_tracker.h"
 
 // Test suite for ItemTracker class
 class ItemTrackerTest : public testing::Test {
@@ -95,4 +98,40 @@ TEST_F(ItemTrackerTest, ImportFromStream_EntriesWithSpaces) {
 // Tests behavior when attempting to load items from a non-existent file
 TEST_F(ItemTrackerTest, LoadItemsFromFile_FileDoesNotExist) {
   EXPECT_FALSE(tracker_.LoadItemsFromFile("non_existent_file.txt"));
+}
+
+// Export tests
+// Tests the export of items to a stream
+TEST_F(ItemTrackerTest, ExportToStream_ValidExport) {
+  std::istringstream test_stream("apple\nbanana\napple\n");
+  PopulateTracker(test_stream);
+
+  std::ostringstream output_stream;
+  EXPECT_TRUE(tracker_.ExportToStream(output_stream));
+
+  // Expected output format: "item frequency"
+  std::string expected_output = "apple 2\nbanana 1\n";
+  EXPECT_EQ(output_stream.str(), expected_output);
+}
+
+// Tests the export of empty items to a stream
+TEST_F(ItemTrackerTest, ExportToStream_EmptyItems) {
+  std::ostringstream output_stream;
+  EXPECT_TRUE(tracker_.ExportToStream(output_stream));
+
+  // No items should be exported, so the output should be empty
+  EXPECT_EQ(output_stream.str(), "");
+}
+
+// Tests the export with only one item in the tracker
+TEST_F(ItemTrackerTest, ExportToStream_SingleItem) {
+  std::istringstream test_stream("apple\n");
+  PopulateTracker(test_stream);
+
+  std::ostringstream output_stream;
+  EXPECT_TRUE(tracker_.ExportToStream(output_stream));
+
+  // Expected output with only one item in the tracker
+  std::string expected_output = "apple 1\n";
+  EXPECT_EQ(output_stream.str(), expected_output);
 }
