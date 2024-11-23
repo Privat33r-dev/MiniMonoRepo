@@ -1,8 +1,11 @@
-# CS 210 Monorepo
-This is a Monorepo of SNHU's CS 210 project completed by me.
+# CS 210 Mono-Repository
+This is a monorepo of SNHU's CS 210 C++ projects.
 
 ## Clock
-Simple CLI clock app.
+A simple command-line interface (CLI) application that displays the time set by user in 12- and 24-hour format simultaniously.
 
 ## AirGeadBanking
-Percent calculation CLI app.
+A CLI application that calculates (not inflation-adjusted) compound interest to help users manage their financial growth through various saving and investment plans.
+
+## Item Tracker
+CLI tool to track, analyze, and export item frequencies from input files.
