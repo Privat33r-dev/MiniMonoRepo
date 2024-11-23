@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -10,115 +11,138 @@ namespace mini_utils {
 using std::string;
 using std::vector;
 
-// TODO: formatter standard class
-// setWidth, width_, truncate
+// Checks whether provided value is a positive real number
+bool isPositiveRealNum(double number);
 
-class StringFormatter {
+// Trims leading and trailing whitespace from a string
+string trim(const string& STR);
+
+class Formatter {
+ public:
+  Formatter(int width);
+  void setWidth(int newWidth);
+
+ protected:
+  // Helper: truncate a string if it exceeds the width
+  string truncateString(const string& STR, int width) const;
+
+  // Width within which the text is rendered
+  int m_width = 0;
+};
+
+class StringFormatter : public Formatter {
  public:
   StringFormatter(int width);
-  string horizontalSeparator(char borderChar = '*') const;
-  string horizontalSeparatorWithSides(char separatorChar = '*',
-                                      char sideChar = '|') const;
+  string horizontalSeparator(const char BORDER_CHAR = '*') const;
+  string horizontalSeparatorWithSides(const char SEPARATOR_CHAR = '*',
+                                      const char SIDE_CHAR = '|') const;
 
   // Format a label centered within the width, with customizable border.
   // Example: "*     SOME TEXT     *"
-  string formatCentered(const string& label,
-                        const char& border_char = '*') const;
+  string formatCentered(const string& LABEL,
+                        const char BORDER_CHAR = '*') const;
 
   // Format a label with a fixed one-space padding: "***** TEXT *****".
-  string formatFullBorder(const string& label,
-                          const char& border_char = '*') const;
+  string formatFullBorder(const string& LABEL,
+                          const char BORDER_CHAR = '*') const;
 
   // Format the label with a fixed one-space padding on the left: "* TEXT     *"
-  string formatSideBorder(const string& label,
-                          const char& border_char = '*') const;
+  string formatSideBorder(const string& LABEL,
+                          const char BORDER_CHAR = '*') const;
 
   // Format double to string with precision
-  string toStringWithPrecision(double value, int precision = 2);
+  string toStringWithPrecision(double value, int precision = 2) const;
 
  private:
-  // Width within which the text is rendered
-  int m_width;
-
   // Helper to construct a formatted string with padding and border.
-  string buildFormattedString(const string& label, int leftPadding,
-                                   int rightPadding, char borderChar) const;
+  string buildFormattedString(const string& LABEL, int leftPadding,
+                              int rightPadding, char borderChar) const;
 
-  string buildFullBorderFormattedString(const string& label,
-                                             int leftPadding, int rightPadding,
-                                             char borderChar) const;
+  string buildFullBorderFormattedString(const string& LABEL, int leftPadding,
+                                        int rightPadding,
+                                        char borderChar) const;
 
-
-  string buildCentered(const string& label, const char& borderChar,
-                             string (StringFormatter::*formatBuilder)(
-                                 const string&, int, int, char) const) const;
-
-  string truncateLabel(const string& label,
-                                        int maxWidth) const;
+  string buildCentered(const string& LABEL, const char BORDER_CHAR,
+                       string (StringFormatter::*formatBuilder)(const string&,
+                                                                int, int, char)
+                           const) const;
 
   struct StringMetrics {
-    int usable_width;
-    int label_length;
+    int usableWidth;
+    int labelLength;
   };
 
-  StringMetrics calculateStringMetrics(const string& label) const;
+  StringMetrics calculateStringMetrics(const string& LABEL) const;
 };
 
 // Clear the input buffer in case of invalid input,
 // ensuring that subsequent input operations are not affected.
 void clearInput();
 
-// Get validated input from user using provided validator
-// The `criteriaDescription` parameter should describe the validation criteria
-// (e.g. "positive integer"). It's used in error messages when validation fails.
+// Prompts the user to input a value, validates it, and ensures it meets
+// specified criteria.
+//
+// T: The expected input type (e.g., int, double, string).
+// PROMPT: Message to display when asking for input.
+// validator: A function that checks if the input meets specific conditions.
+// criteriaDescription: A short explanation of the validation criteria for error
+// messages (default is "value").
+// strictMode: If true, disallows extra characters after the expected input.
 template <typename T>
-T getValidatedInput(const string& prompt, std::function<bool(T)> validator,
-                    const string& criteriaDescription = "value") {
+T getValidatedInput(const string& PROMPT, std::function<bool(T)> validator,
+                    const string& CRITERIA_DESCRIPTION = "value",
+                    bool strictMode = false) {
   T input;
-  while (true) {
-    std::cout << prompt;
-    std::cin >> input;
+  bool isInputValid = false;
 
-    // Check if input is valid
-    if (std::cin.fail()) {
-      clearInput();
-      std::cout << "Invalid input. Please enter a valid " << criteriaDescription
+  do {
+    std::cout << PROMPT;
+    string rawInput = "";
+    getline(std::cin, rawInput);
+
+    // Trim raw input and attempt to convert to the desired type
+    rawInput = trim(rawInput);
+    std::stringstream inputStream(rawInput);
+
+    // Attempt to extract the input
+    if (!(inputStream >> input)) {
+      std::cout << "Invalid input. Please enter a valid "
+                << CRITERIA_DESCRIPTION
                 << "." << std::endl;
-      continue;
-    }
-
-    // Check if there are extra characters (like "1 2 3")
-    if (std::cin.peek() != '\n') {
-      clearInput();
-      std::cout << "Only one value is allowed. Please enter a valid "
-                << criteriaDescription << "." << std::endl;
       continue;
     }
 
     // Check if input meets custom criteria
     if (!validator(input)) {
-      clearInput();
       std::cout << "Input is out of the accepted range or format. Please enter "
                    "a valid "
-                << criteriaDescription << "." << std::endl;
+                << CRITERIA_DESCRIPTION << "." << std::endl;
       continue;
     }
 
-    break;  // Input is valid and passes the validator function
-  }
+    // In strict mode, ensure there are no unexpected characters after the input
+    char extraChar;
+    if (strictMode && inputStream >> extraChar) {
+      std::cout << "Unexpected characters found. Please enter a valid "
+                << CRITERIA_DESCRIPTION << "." << std::endl;
+      continue;
+    }
+
+    isInputValid = true;  // Input is valid and passes the validator function
+  } while (!isInputValid);
+
   return input;
 }
 
-
-class TableFormatter {
+class TableFormatter : public Formatter {
  public:
   TableFormatter(int width);
   // Mind that minimal terminal size in columns: 80
-  bool setColumnWidths(const vector<int>& widths);
-  void setHeaders(const vector<string>& headers);
+  bool setColumnWidths(const vector<int>& WIDTHS);
+  void setHeaders(const vector<string>& HEADERS);
 
   // Add a row to the table
-  void addRow(const vector<string>& row);
+  void addRow(const vector<string>& ROW);
 
   // Clear all rows
   void clearRows();
@@ -127,23 +151,13 @@ class TableFormatter {
   string render() const;
 
  private:
-  int m_width;                    // Total table width
   vector<int> m_col_widths;       // Column widths
   vector<string> m_headers;       // Optional headers
   vector<vector<string>> m_rows;  // Rows of data
 
   // Helper: format a single row as a string
-  string formatRow(const vector<string>& row) const;
-
-  // Helper: truncate a string if it exceeds the width
-  string truncateString(const string& str, int width) const;
+  string formatRow(const vector<string>& ROW) const;
 };
-
-// Checks whether provided value is a positive real number
-bool isPositiveRealNum(double number);
-
-// Trims leading and trailing whitespace from a string
-string trim(const string& str);
 
 }  // namespace mini_utils
 #endif  // MINI_UTILS_H

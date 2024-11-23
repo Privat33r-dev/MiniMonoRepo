@@ -1,9 +1,10 @@
 #include "clock.h"
 
-#include <iostream>
+#include <iomanip>
 
 #include "mini_utils.h"
 
+namespace clock_cli {
 using std::cin;
 using std::cout;
 using std::endl;
@@ -17,7 +18,7 @@ void Clock::printStyledBorder(bool doubleBorder) {
   string border(m_width, '*');
   cout << border;
   if (doubleBorder) {
-    cout << kClockSeparator << border;
+    cout << CLOCK_SEPARATOR << border;
   }
   cout << endl;
 }
@@ -25,11 +26,12 @@ void Clock::printStyledBorder(bool doubleBorder) {
 void Clock::displayTime() {
   printStyledBorder(true);
 
-  cout << m_formatter.formatCentered("12-Hour Clock") << kClockSeparator
+  cout << m_formatter.formatCentered("12-Hour Clock") << CLOCK_SEPARATOR
        << m_formatter.formatCentered("24-Hour Clock") << endl;
 
-  cout << m_formatter.formatCentered(getFormattedTime(false)) << kClockSeparator
-       << m_formatter.formatCentered(getFormattedTime(true)) << endl;
+  cout << m_formatter.formatCentered(getFormattedTime12Hours())
+       << CLOCK_SEPARATOR
+       << m_formatter.formatCentered(getFormattedTime24Hours()) << endl;
 
   printStyledBorder(true);
 }
@@ -54,48 +56,46 @@ void Clock::displayMenu() {
 }
 
 void Clock::getTimeFromUser() {
-  // Declare temporary variables for user input of hours, minutes, and seconds
-  unsigned short userInputHours, userInputMinutes, userInputSeconds;
+  std::cout << "Please enter time in 24-hour format:" << std::endl;
 
-  string timeInput = mini_utils::getValidatedInput<string>(
-      "Enter time in the (24 hour) format hh:mm:ss: ",
-      [&userInputHours, &userInputMinutes,
-       &userInputSeconds](const string& input) {
-        char colon1, colon2;
-        std::stringstream inputStream(input);
+  // Collect input from user
+  m_hours = mini_utils::getValidatedInput<int>(
+      "Hours: ",
+      [](const int& HOURS_INPUT) {
+        return HOURS_INPUT >= 0 && HOURS_INPUT <= 23;
+      },
+      "integer in range from 0 to 23");
 
-        // Validate the input format and range of hours, minutes, and seconds
-        if (inputStream >> userInputHours >> colon1 >> userInputMinutes >>
-                colon2 >> userInputSeconds &&
-            colon1 == ':' && colon2 == ':' && userInputHours >= 0 &&
-            userInputHours < 24 && userInputMinutes >= 0 &&
-            userInputMinutes < 60 && userInputSeconds >= 0 &&
-            userInputSeconds < 60) {
-          return true;  // Validation successful
-        }
-        return false;  // Validation failed
-      });
+  m_minutes = mini_utils::getValidatedInput<int>(
+      "Minutes: ",
+      [](const int& MINUTES_INPUT) {
+        return MINUTES_INPUT >= 0 && MINUTES_INPUT <= 59;
+      },
+      "integer in range from 0 to 59");
 
-  // Assign validated values to class member variables representing time
-  m_hours = userInputHours;
-  m_minutes = userInputMinutes;
-  m_seconds = userInputSeconds;
+  m_seconds = mini_utils::getValidatedInput<int>(
+      "Seconds: ",
+      [](const int& SECONDS_INPUT) {
+        return SECONDS_INPUT >= 0 && SECONDS_INPUT <= 59;
+      },
+      "integer in range from 0 to 59");
 }
 
-string Clock::getFormattedTime(bool is24HoursFormat) const {
+string Clock::getFormattedTime24Hours() const {
+  return formatTime(m_hours, "", m_minutes, m_seconds);
+}
+
+string Clock::getFormattedTime12Hours() const {
+  unsigned short formattedHours = (m_hours % 12 == 0) ? 12 : m_hours % 12;
+  string period = (m_hours >= 12) ? " PM" : " AM";
+  return formatTime(formattedHours, period, m_minutes, m_seconds);
+}
+
+string Clock::formatTime(unsigned short hours, const string& PERIOD,
+                         unsigned short minutes, unsigned short seconds) const {
   std::ostringstream oss;
-
-  string period = "";
-  if (!is24HoursFormat) {
-    period = m_hours >= 12 ? " PM" : " AM";
-  }
-  unsigned short formattedHours = is24HoursFormat ? m_hours : m_hours % 12;
-  // 12 AM/PM instead of 0 to conform to standards
-  if (formattedHours == 0 && !is24HoursFormat) formattedHours = 12;
-
-  oss << setfill('0') << setw(2) << formattedHours << ":" << setw(2)
-      << m_minutes << ":" << setw(2) << m_seconds << period;
-
+  oss << std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2)
+      << minutes << ":" << std::setw(2) << seconds << PERIOD;
   return oss.str();
 }
 
@@ -117,7 +117,7 @@ bool Clock::execInstructionFromUser() {
       displayTime();
       break;
     case 4:
-      cout << m_formatter.formatSideBorder("Exiting program...") << endl;
+      cout << m_formatter.formatSideBorder("Exiting program...");
       return false;
   }
   return true;
@@ -161,3 +161,4 @@ void Clock::startCli() {
     displayMenu();
   } while (execInstructionFromUser());
 }
+}  // namespace clock_cli

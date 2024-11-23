@@ -24,7 +24,7 @@ long double DepositCalculator::calculateCompoundInterest(
   long double monthlyRate = annualInterestRate / MONTHS_IN_A_YEAR;
 
   // Total number of months
-  int totalMonths = years * MONTHS_IN_A_YEAR;
+  int totalMonths = years * static_cast<int>(MONTHS_IN_A_YEAR);
 
   // Calculate compounded principal amount
   long double compoundedPrincipal =
