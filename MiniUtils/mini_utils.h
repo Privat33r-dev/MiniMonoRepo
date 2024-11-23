@@ -142,5 +142,8 @@ class TableFormatter {
 // Checks whether provided value is a positive real number
 bool isPositiveRealNum(double number);
 
+// Trims leading and trailing whitespace from a string
+string trim(const string& str);
+
 }  // namespace mini_utils
 #endif  // MINI_UTILS_H

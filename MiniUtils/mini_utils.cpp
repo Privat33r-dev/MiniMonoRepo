@@ -208,4 +208,12 @@ bool isPositiveRealNum(double number) {
   return std::isnormal(number) && number > 0;
 }
 
+string trim(const string& str) {
+  const auto start = str.find_first_not_of(" \t\n\r");
+  if (start == std::string::npos) return "";  // String is all whitespace
+
+  const auto end = str.find_last_not_of(" \t\n\r");
+  return str.substr(start, end - start + 1);
+}
+
 }  // namespace mini_utils
