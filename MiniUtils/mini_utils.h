@@ -3,12 +3,19 @@
 
 #include <functional>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
 namespace mini_utils {
 using std::string;
 using std::vector;
+
+// Checks whether provided value is a positive real number
+bool isPositiveRealNum(double number);
+
+// Trims leading and trailing whitespace from a string
+string trim(const string& str);
 
 // TODO: formatter standard class
 // setWidth, width_, truncate
@@ -68,44 +75,57 @@ class StringFormatter {
 // ensuring that subsequent input operations are not affected.
 void clearInput();
 
-// Get validated input from user using provided validator
-// The `criteriaDescription` parameter should describe the validation criteria
-// (e.g. "positive integer"). It's used in error messages when validation fails.
+// Prompts the user to input a value, validates it, and ensures it meets
+// specified criteria.
+// 
+// T: The expected input type (e.g., int, double, string).
+// prompt: Message to display when asking for input.
+// validator: A function that checks if the input meets specific conditions.
+// criteriaDescription: A short explanation of the validation criteria for error
+// messages (default is "value").
+// strictMode: If true, disallows extra characters after the expected input.
 template <typename T>
 T getValidatedInput(const string& prompt, std::function<bool(T)> validator,
-                    const string& criteriaDescription = "value") {
+                    const string& criteriaDescription = "value",
+                    bool strictMode = false) {
   T input;
-  while (true) {
-    std::cout << prompt;
-    std::cin >> input;
+  string rawInput;
+  bool isInputValid = false;
 
-    // Check if input is valid
-    if (std::cin.fail()) {
-      clearInput();
+  do {
+    std::cout << prompt;
+    getline(std::cin, rawInput);
+
+    // Trim raw input and attempt to convert to the desired type
+    rawInput = trim(rawInput);
+    std::stringstream inputStream(rawInput);
+
+    // Attempt to extract the input
+    if (!(inputStream >> input)) {
       std::cout << "Invalid input. Please enter a valid " << criteriaDescription
                 << "." << std::endl;
       continue;
     }
 
-    // Check if there are extra characters (like "1 2 3")
-    if (std::cin.peek() != '\n') {
-      clearInput();
-      std::cout << "Only one value is allowed. Please enter a valid "
-                << criteriaDescription << "." << std::endl;
-      continue;
-    }
-
     // Check if input meets custom criteria
     if (!validator(input)) {
-      clearInput();
       std::cout << "Input is out of the accepted range or format. Please enter "
                    "a valid "
                 << criteriaDescription << "." << std::endl;
       continue;
     }
 
-    break;  // Input is valid and passes the validator function
-  }
+    // In strict mode, ensure there are no unexpected characters after the input
+    char extraChar;
+    if (strictMode && inputStream >> extraChar) {
+      std::cout << "Unexpected characters found. Please enter a valid "
+                << criteriaDescription << "." << std::endl;
+      continue;
+    }
+
+    isInputValid = true;  // Input is valid and passes the validator function
+  } while (!isInputValid);
+
   return input;
 }
 
@@ -138,12 +158,6 @@ class TableFormatter {
   // Helper: truncate a string if it exceeds the width
   string truncateString(const string& str, int width) const;
 };
-
-// Checks whether provided value is a positive real number
-bool isPositiveRealNum(double number);
-
-// Trims leading and trailing whitespace from a string
-string trim(const string& str);
 
 }  // namespace mini_utils
 #endif  // MINI_UTILS_H
