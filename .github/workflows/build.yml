@@ -2,11 +2,20 @@ name: MSBuild
 
 on:
   push:
+    paths-ignore:
+      - "**/README.md"
+      - "LICENSE.txt"
+      - ".gitignore"
     branches:
-      - "*"
+      - master
   pull_request:
+    paths-ignore:
+      - "**/README.md"
+      - "LICENSE.txt"
+      - ".gitignore"
     branches:
-      - "master"
+      - master
+
 
 env:
   SOLUTION_FILE_PATH: "MiniProjects MonoRepo.sln"
