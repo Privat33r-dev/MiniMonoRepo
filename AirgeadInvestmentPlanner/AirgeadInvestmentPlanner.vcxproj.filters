@@ -18,12 +18,12 @@
     <ClCompile Include="main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="airgead_banking_cli.cc">
+    <ClCompile Include="airgead_investment_planner_cli.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="airgead_banking_cli.h">
+    <ClInclude Include="airgead_investment_planner_cli.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,14 +1,14 @@
 /*
- * Airgead Banking Deposit Calculator
+ * Airgead Investment Planner
  */
-#include "airgead_banking_cli.h"
+#include "airgead_investment_planner_cli.h"
 
 #include <cmath>
 #include <iostream>
 
 #include "mini_utils.h"
 
-namespace airgead_banking_cli {
+namespace airgead_investment_planner_cli {
 using std::cout;
 using std::endl;
 using std::string;
@@ -40,7 +40,7 @@ long double DepositCalculator::calculateCompoundInterest(
   return compoundedPrincipal + futureValueOfDeposits;
 }
 
-AirgeadBankingCli::AirgeadBankingCli(int t_width, double t_principal,
+InvestmentPlannerCli::InvestmentPlannerCli(int t_width, double t_principal,
                                      double t_monthlyDeposit,
                                      double t_annualRate, int t_years)
     : m_width(t_width),
@@ -51,7 +51,7 @@ AirgeadBankingCli::AirgeadBankingCli(int t_width, double t_principal,
       m_annualRate(t_annualRate),
       m_years(t_years) {}
 
-void AirgeadBankingCli::getValuesFromUser() {
+void InvestmentPlannerCli::getValuesFromUser() {
   const int min_years = MIN_INVEST_YEARS;
   const int max_years = MAX_INVEST_YEARS;
 
@@ -74,7 +74,7 @@ void AirgeadBankingCli::getValuesFromUser() {
           std::to_string(MAX_INVEST_YEARS));
 }
 
-string AirgeadBankingCli::getTable(bool withDeposits) {
+string InvestmentPlannerCli::getTable(bool withDeposits) {
   std::vector<string> headers = {"Year", "End of the Year Balance",
                                  "End of the Year Earned Interest"};
   m_table_formatter.setHeaders(headers);
@@ -121,14 +121,14 @@ string AirgeadBankingCli::getTable(bool withDeposits) {
   return result;
 }
 
-void AirgeadBankingCli::pressToContinue() {
+void InvestmentPlannerCli::pressToContinue() {
   cout << "Press enter to continue..." << endl;
   std::cin.get();
   std::cout << "\x1b[1A\x1b[1A"  // Move cursor two lines up
             << "\x1b[2K";        // Delete the entire line
 }
 
-void AirgeadBankingCli::startCli() {
+void InvestmentPlannerCli::startCli() {
   const char FORMAT_CHAR = '-';
   cout << m_string_formatter.horizontalSeparator(FORMAT_CHAR) << endl
        << m_string_formatter.formatFullBorder("Airgead Investment Calculator",
@@ -142,4 +142,4 @@ void AirgeadBankingCli::startCli() {
 
   cout << getTable(false) << endl << getTable(true) << endl;
 }
-}  // namespace airgead_banking_cli
+}  // namespace airgead_investment_planner_cli
