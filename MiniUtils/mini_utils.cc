@@ -29,10 +29,10 @@ void Formatter::setWidth(int newWidth) { m_width = newWidth; }
 // StringFormatter
 // Private
 StringFormatter::StringMetrics StringFormatter::calculateStringMetrics(
-    const string& label) const {
+    const string& LABEL) const {
   const int MIN_PADDING = 2;                       // Borders (e.g., "*TEXT*")
   const int USABLE_WIDTH = m_width - MIN_PADDING;  // Max text size
-  const int LABEL_LENGTH = static_cast<int>(label.length());
+  const int LABEL_LENGTH = static_cast<int>(LABEL.length());
   return {USABLE_WIDTH, LABEL_LENGTH};
 }
 
@@ -67,17 +67,17 @@ void clearInput() {
 
 StringFormatter::StringFormatter(int width) : Formatter(width) {}
 
-string StringFormatter::horizontalSeparator(char borderChar) const {
-  return string(m_width, borderChar);
+string StringFormatter::horizontalSeparator(const char BORDER_CHAR) const {
+  return string(m_width, BORDER_CHAR);
 }
 
-string StringFormatter::horizontalSeparatorWithSides(char separatorChar,
-                                                     char sideChar) const {
-  return sideChar + string(m_width - 2, separatorChar) + sideChar;
+string StringFormatter::horizontalSeparatorWithSides(
+    const char SEPARATOR_CHAR, const char SIDE_CHAR) const {
+  return SIDE_CHAR + string(m_width - 2, SEPARATOR_CHAR) + SIDE_CHAR;
 }
 
 string StringFormatter::buildCentered(
-    const string& LABEL, const char& borderChar,
+    const string& LABEL, const char BORDER_CHAR,
     string (StringFormatter::*formatBuilder)(const string&, int, int, char)
         const) const {
   auto [usableWidth, labelLength] = calculateStringMetrics(LABEL);
@@ -88,23 +88,23 @@ string StringFormatter::buildCentered(
   const int RIGHT_PADDING = TOTAL_PADDING - LEFT_PADDING;
 
   return (this->*formatBuilder)(truncatedLabel, LEFT_PADDING, RIGHT_PADDING,
-                                borderChar);
+                                BORDER_CHAR);
 }
 
 string StringFormatter::formatCentered(const string& LABEL,
-                                       const char& borderChar) const {
-  return buildCentered(LABEL, borderChar,
+                                       const char BORDER_CHAR) const {
+  return buildCentered(LABEL, BORDER_CHAR,
                        &StringFormatter::buildFormattedString);
 }
 
 string StringFormatter::formatFullBorder(const string& LABEL,
-                                         const char& borderChar) const {
-  return buildCentered(LABEL, borderChar,
+                                         const char BORDER_CHAR) const {
+  return buildCentered(LABEL, BORDER_CHAR,
                        &StringFormatter::buildFullBorderFormattedString);
 }
 
 string StringFormatter::formatSideBorder(const string& LABEL,
-                                         const char& BORDER_CHAR) const {
+                                         const char BORDER_CHAR) const {
   const auto [USABLE_WIDTH, LABEL_LENGTH] = calculateStringMetrics(LABEL);
   string truncatedLabel = truncateString(LABEL, USABLE_WIDTH);
   const int SPACES =
@@ -114,7 +114,7 @@ string StringFormatter::formatSideBorder(const string& LABEL,
                               BORDER_CHAR);
 }
 
-string StringFormatter::toStringWithPrecision(double value, int precision) {
+string StringFormatter::toStringWithPrecision(double value, int precision) const {
   std::ostringstream oss;
   oss << std::fixed << std::setprecision(precision) << value;
   return oss.str();
