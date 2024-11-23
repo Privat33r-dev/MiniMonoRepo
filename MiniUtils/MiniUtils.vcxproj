@@ -150,7 +150,7 @@
     <ClInclude Include="mini_utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mini_utils.cpp" />
+    <ClCompile Include="mini_utils.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

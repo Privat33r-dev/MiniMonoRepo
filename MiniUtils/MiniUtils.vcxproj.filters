@@ -20,7 +20,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mini_utils.cpp">
+    <ClCompile Include="mini_utils.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

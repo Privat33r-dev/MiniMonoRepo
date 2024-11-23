@@ -17,10 +17,20 @@ bool isPositiveRealNum(double number);
 // Trims leading and trailing whitespace from a string
 string trim(const string& str);
 
-// TODO: formatter standard class
-// setWidth, width_, truncate
+class Formatter {
+ public:
+  Formatter(int width);
+  void setWidth(int newWidth);
 
-class StringFormatter {
+ protected:
+  // Helper: truncate a string if it exceeds the width
+  string truncateString(const string& STR, int width) const;
+
+  // Width within which the text is rendered
+  int m_width = 0;
+};
+
+class StringFormatter : public Formatter {
  public:
   StringFormatter(int width);
   string horizontalSeparator(char borderChar = '*') const;
@@ -30,42 +40,38 @@ class StringFormatter {
   // Format a label centered within the width, with customizable border.
   // Example: "*     SOME TEXT     *"
   string formatCentered(const string& label,
-                        const char& border_char = '*') const;
+                        const char& borderChar = '*') const;
 
   // Format a label with a fixed one-space padding: "***** TEXT *****".
   string formatFullBorder(const string& label,
-                          const char& border_char = '*') const;
+                          const char& borderChar = '*') const;
 
   // Format the label with a fixed one-space padding on the left: "* TEXT     *"
   string formatSideBorder(const string& label,
-                          const char& border_char = '*') const;
+                          const char& borderChar = '*') const;
 
   // Format double to string with precision
   string toStringWithPrecision(double value, int precision = 2);
 
  private:
-  // Width within which the text is rendered
-  int m_width;
-
   // Helper to construct a formatted string with padding and border.
   string buildFormattedString(const string& label, int leftPadding,
-                                   int rightPadding, char borderChar) const;
+                              int rightPadding, char borderChar) const;
 
-  string buildFullBorderFormattedString(const string& label,
-                                             int leftPadding, int rightPadding,
-                                             char borderChar) const;
-
+  string buildFullBorderFormattedString(const string& label, int leftPadding,
+                                        int rightPadding,
+                                        char borderChar) const;
 
   string buildCentered(const string& label, const char& borderChar,
-                             string (StringFormatter::*formatBuilder)(
-                                 const string&, int, int, char) const) const;
+                       string (StringFormatter::*formatBuilder)(const string&,
+                                                                int, int, char)
+                           const) const;
 
-  string truncateLabel(const string& label,
-                                        int maxWidth) const;
+  string truncateLabel(const string& label, int maxWidth) const;
 
   struct StringMetrics {
-    int usable_width;
-    int label_length;
+    int usableWidth;
+    int labelLength;
   };
 
   StringMetrics calculateStringMetrics(const string& label) const;
@@ -77,7 +83,7 @@ void clearInput();
 
 // Prompts the user to input a value, validates it, and ensures it meets
 // specified criteria.
-// 
+//
 // T: The expected input type (e.g., int, double, string).
 // prompt: Message to display when asking for input.
 // validator: A function that checks if the input meets specific conditions.
@@ -89,11 +95,11 @@ T getValidatedInput(const string& prompt, std::function<bool(T)> validator,
                     const string& criteriaDescription = "value",
                     bool strictMode = false) {
   T input;
-  string rawInput;
   bool isInputValid = false;
 
   do {
     std::cout << prompt;
+    string rawInput = "";
     getline(std::cin, rawInput);
 
     // Trim raw input and attempt to convert to the desired type
@@ -129,8 +135,7 @@ T getValidatedInput(const string& prompt, std::function<bool(T)> validator,
   return input;
 }
 
-
-class TableFormatter {
+class TableFormatter : public Formatter {
  public:
   TableFormatter(int width);
   // Mind that minimal terminal size in columns: 80
@@ -147,16 +152,12 @@ class TableFormatter {
   string render() const;
 
  private:
-  int m_width;                    // Total table width
   vector<int> m_col_widths;       // Column widths
   vector<string> m_headers;       // Optional headers
   vector<vector<string>> m_rows;  // Rows of data
 
   // Helper: format a single row as a string
   string formatRow(const vector<string>& row) const;
-
-  // Helper: truncate a string if it exceeds the width
-  string truncateString(const string& str, int width) const;
 };
 
 }  // namespace mini_utils
