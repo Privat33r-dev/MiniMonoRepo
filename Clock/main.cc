@@ -6,7 +6,7 @@
 #include "clock.h"
 
 int main() {
-  Clock clock = Clock();
+  clock_cli::Clock clock;
   clock.startCli();
 
   return 0;

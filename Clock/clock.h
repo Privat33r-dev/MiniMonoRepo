@@ -1,31 +1,37 @@
 #ifndef CLOCK_H
 #define CLOCK_H
-#include <algorithm>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <limits>
-#include <sstream>
 #include <string>
 
 #include "mini_utils.h"
 
+namespace clock_cli {
 using std::string;
 
 class Clock {
  private:
-  unsigned short int m_hours, m_minutes, m_seconds;
-  unsigned short int m_width = 26;
+  // Expected range of values is 0..60,
+  // hence unsigned short int, which ranges 0..65535
+  unsigned short m_hours = 0;
+  unsigned short m_minutes = 0;
+  unsigned short m_seconds = 0;
+
+  // Clock formatting width, expected range 0..1000 (ultra wide screen)
+  unsigned short m_width = 26;
+
   mini_utils::StringFormatter m_formatter;
 
-  const string kClockSeparator = "    ";
+  // Separator between 24- and 12-hour clocks
+  const string CLOCK_SEPARATOR = "    ";
 
-  // Print border composed of start characters, optionally formatted for 2
+  // Print border composed of start characters, optionally formatted for two
   // clocks
   void printStyledBorder(bool doubleBorder = false);
 
-  // Get formatted time in 12- and 24-hour formats
-  string getFormattedTime(bool is24HoursFormat) const;
+  // Get formatted time in 12-hour formats
+  string getFormattedTime12Hours() const;
+
+  // Get formatted time in 24-hour formats
+  string getFormattedTime24Hours() const;
 
   // Adjust the time by carrying over values. For example, if seconds >= 60,
   // they will be converted to minutes.
@@ -56,8 +62,13 @@ class Clock {
   // Add one hour to the time
   void addOneHour();
 
+  // Helper to get 12- or 24-hours formatted time
+  string formatTime(unsigned short hours, const string& PERIOD,
+                    unsigned short minutes, unsigned short seconds) const;
+
   // Start the command-line interface (CLI) for interacting with the clock
   void startCli();
 };
 
+}  // namespace clock_cli
 #endif  // CLOCK_H
