@@ -47,6 +47,7 @@ jobs:
 
     - name: Build x86
       id: build_x86
+      if: false # Disabled for now
       run: |
         msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=x86 "${{ env.SOLUTION_FILE_PATH }}"
         $x86_exe = (Get-ChildItem -Path "${{ github.workspace }}/${{ env.BUILD_CONFIGURATION }}" -Filter *.exe -Recurse).FullName -replace '\\\\', '/'
