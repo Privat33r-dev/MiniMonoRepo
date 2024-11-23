@@ -37,7 +37,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Restore NuGet packages
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+      run: nuget restore "${{env.SOLUTION_FILE_PATH}}"
 
     - name: Build x64
       id: build_x64
