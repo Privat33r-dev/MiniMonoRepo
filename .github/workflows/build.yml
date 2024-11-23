@@ -9,9 +9,8 @@ on:
       - "master"
 
 env:
-  SOLUTION_FILE_PATH: "Projects Monorepo.sln"
+  SOLUTION_FILE_PATH: "MiniProjects MonoRepo.sln"
   BUILD_CONFIGURATION: Release
-  APP_NAME: Clock
 
 permissions:
   contents: read
@@ -37,19 +36,19 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Restore NuGet packages
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+      run: nuget restore "${{env.SOLUTION_FILE_PATH}}"
 
     - name: Build x64
       id: build_x64
       run: |
-        msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=x64 ${{ env.SOLUTION_FILE_PATH }}
+        msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=x64 "${{ env.SOLUTION_FILE_PATH }}"
         $x64_exe = (Get-ChildItem -Path "${{ github.workspace }}/x64/${{ env.BUILD_CONFIGURATION }}" -Filter *.exe -Recurse).FullName -replace '\\\\', '/'
         echo "x64_exe=$x64_exe" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
     - name: Build x86
       id: build_x86
       run: |
-        msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=x86 ${{ env.SOLUTION_FILE_PATH }}
+        msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=x86 "${{ env.SOLUTION_FILE_PATH }}"
         $x86_exe = (Get-ChildItem -Path "${{ github.workspace }}/${{ env.BUILD_CONFIGURATION }}" -Filter *.exe -Recurse).FullName -replace '\\\\', '/'
         echo "x86_exe=$x86_exe" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         
