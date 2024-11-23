@@ -1,10 +1,10 @@
 # CS 210 Mono-Repository
-This is a monorepo of SNHU's CS 210 C++ projects.
+This is a monorepo of CS 210 C++ projects.
 
 ## Clock
 A simple command-line interface (CLI) application that displays the time set by user in 12- and 24-hour format simultaniously.
 
-## AirGeadBanking
+## Airgead Investment Planner
 A CLI application that calculates (not inflation-adjusted) compound interest to help users manage their financial growth through various saving and investment plans.
 
 ## Item Tracker

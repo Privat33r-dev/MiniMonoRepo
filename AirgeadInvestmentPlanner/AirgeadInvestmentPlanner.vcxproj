@@ -24,6 +24,7 @@
     <ProjectGuid>{048fe8e7-5fb3-4ad6-a978-1baf2f6401e1}</ProjectGuid>
     <RootNamespace>AirGeadBanking</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>AirgeadInvestmentPlanner</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -131,7 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="airgead_banking_cli.cc" />
+    <ClCompile Include="airgead_investment_planner_cli.cc" />
     <ClCompile Include="main.cc" />
   </ItemGroup>
   <ItemGroup>
@@ -140,7 +141,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="airgead_banking_cli.h" />
+    <ClInclude Include="airgead_investment_planner_cli.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

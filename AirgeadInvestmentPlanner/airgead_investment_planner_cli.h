@@ -1,8 +1,8 @@
 #include "mini_utils.h"
-#ifndef AIR_GEAD_BANKING_CLI_H
-#define AIR_GEAD_BANKING_CLI_H
+#ifndef AIRGEAD_INVESTMENT_PLANNER_CLI_H
+#define AIRGEAD_INVESTMENT_PLANNER_CLI_H
 
-namespace airgead_banking_cli {
+namespace airgead_investment_planner_cli {
 const int DEFAULT_WIDTH = 80;
 
 class DepositCalculator {
@@ -13,9 +13,9 @@ class DepositCalculator {
                                                int years = 1);
 };
 
-class AirgeadBankingCli {
+class InvestmentPlannerCli {
  public:
-  AirgeadBankingCli(int t_width = DEFAULT_WIDTH, double t_principal = 0,
+  InvestmentPlannerCli(int t_width = DEFAULT_WIDTH, double t_principal = 0,
                     double t_monthlyDeposit = 0, double t_annualRate = 0,
                     int t_years = 0);
   // Start CLI session with user
@@ -41,6 +41,6 @@ class AirgeadBankingCli {
   // Make necessary calculations based on user input and render output table
   std::string getTable(bool withDeposits);
 };
-}  // namespace airgead_banking_cli
+}  // namespace airgead_investment_planner_cli
 
-#endif  // AIR_GEAD_BANKING_CLI_H
+#endif  // AIRGEAD_INVESTMENT_PLANNER_CLI_H
