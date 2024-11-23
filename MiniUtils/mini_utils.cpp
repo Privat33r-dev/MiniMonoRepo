@@ -69,12 +69,12 @@ void clearInput() {
 
 StringFormatter::StringFormatter(int width) : m_width(width) {}
 
-string StringFormatter::horizontalSeparator(char borderChar) {
+string StringFormatter::horizontalSeparator(char borderChar) const {
   return string(m_width, borderChar);
 }
 
 string StringFormatter::horizontalSeparatorWithSides(char separatorChar,
-                                                     char sideChar) {
+                                                     char sideChar) const {
   return sideChar + string(m_width - 2, separatorChar) + sideChar;
 }
 
@@ -106,7 +106,7 @@ string StringFormatter::formatFullBorder(const string& label,
 }
 
 string StringFormatter::formatSideBorder(const string& label,
-                                         const char& border_char) {
+                                         const char& border_char) const {
   auto [usableWidth, labelLength] = calculateStringMetrics(label);
   string truncatedLabel = truncateLabel(label, usableWidth);
   int spaces =
@@ -206,6 +206,14 @@ string TableFormatter::formatRow(const vector<string>& row) const {
 // Checks whether provided value is a positive real number
 bool isPositiveRealNum(double number) {
   return std::isnormal(number) && number > 0;
+}
+
+string trim(const string& str) {
+  const auto start = str.find_first_not_of(" \t\n\r");
+  if (start == std::string::npos) return "";  // String is all whitespace
+
+  const auto end = str.find_last_not_of(" \t\n\r");
+  return str.substr(start, end - start + 1);
 }
 
 }  // namespace mini_utils
