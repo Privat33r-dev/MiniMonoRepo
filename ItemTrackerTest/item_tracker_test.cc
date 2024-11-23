@@ -87,12 +87,9 @@ TEST_F(ItemTrackerTest, ImportFromStream_EntriesWithSpaces) {
   std::istringstream test_stream(" apple\nbanana \n apple \n");
   PopulateTracker(test_stream);
 
-  EXPECT_EQ(tracker_.GetWordFrequency("apple"),
-            0);  // "apple" without spaces not found
-  EXPECT_EQ(tracker_.GetWordFrequency(" apple"), 1);   // Leading space
-  EXPECT_EQ(tracker_.GetWordFrequency("banana "), 1);  // Trailing space
-  EXPECT_EQ(tracker_.GetWordFrequency(" apple "),
-            1);  // Both leading and trailing spaces
+  // Verify that spaces are trimmed and counts are correct
+  EXPECT_EQ(tracker_.GetWordFrequency("apple"), 2);
+  EXPECT_EQ(tracker_.GetWordFrequency("banana"), 1);
 }
 
 // Tests behavior when attempting to load items from a non-existent file
