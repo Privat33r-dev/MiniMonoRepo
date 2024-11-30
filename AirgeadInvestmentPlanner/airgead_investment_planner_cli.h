@@ -16,14 +16,14 @@ class DepositCalculator {
 class InvestmentPlannerCli {
  public:
   InvestmentPlannerCli(int t_width = DEFAULT_WIDTH, double t_principal = 0,
-                    double t_monthlyDeposit = 0, double t_annualRate = 0,
-                    int t_years = 0);
+                       double t_monthlyDeposit = 0, double t_annualRate = 0,
+                       int t_years = 0);
   // Start CLI session with user
   void startCli();
 
  private:
   const int MIN_INVEST_YEARS = 1;
-  const int MAX_INVEST_YEARS = 50;
+  const int MAX_INVEST_YEARS = 250;
   int m_width;
   double m_principal;
   double m_monthlyDeposit;
@@ -40,6 +40,9 @@ class InvestmentPlannerCli {
 
   // Make necessary calculations based on user input and render output table
   std::string getTable(bool withDeposits);
+
+  // Trims spaces around the string and '$' and '%' in front of the string.
+  static std::string trimUserFormatting(const std::string& ORIG_STR);
 };
 }  // namespace airgead_investment_planner_cli
 
