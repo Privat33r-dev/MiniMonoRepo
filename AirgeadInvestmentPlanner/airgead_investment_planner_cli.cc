@@ -21,9 +21,10 @@ long double DepositCalculator::calculateCompoundInterest(
 
   // Convert percentage to decimal
   long double annualInterestRate = interestRatePercent / PERCENTAGE_TO_DECIMAL;
+  // Calculate monthly rate
   long double monthlyRate = annualInterestRate / MONTHS_IN_A_YEAR;
 
-  // Total number of months
+  // Calculate total number of months in the period
   int totalMonths = years * static_cast<int>(MONTHS_IN_A_YEAR);
 
   // Calculate compounded principal amount
@@ -51,30 +52,40 @@ InvestmentPlannerCli::InvestmentPlannerCli(int t_width, double t_principal,
       m_annualRate(t_annualRate),
       m_years(t_years) {}
 
-void InvestmentPlannerCli::getValuesFromUser() {
-  const int min_years = MIN_INVEST_YEARS;
-  const int max_years = MAX_INVEST_YEARS;
+std::string InvestmentPlannerCli::trimUserFormatting(
+    const std::string& ORIG_STR) {
+  const std::string RESULT = mini_utils::trim(ORIG_STR);
+  size_t start = RESULT.find_first_not_of("$%");
+  // If all characters are '$' or '%', return an empty string
+  return (start != std::string::npos) ? RESULT.substr(start) : "";
+}
 
-  // TODO: Bug or feature: hexadecimal input support
+void InvestmentPlannerCli::getValuesFromUser() {
+  // Can't pass member data in the lambda
+  const int MIN_YEARS = MIN_INVEST_YEARS;
+  const int MAX_YEARS = MAX_INVEST_YEARS;
+
+  // Bug or feature: hexadecimal input support
   m_principal = mini_utils::getValidatedInput<double>(
-      "Initial Investment Amount: ", mini_utils::isPositiveRealNum,
-      "positive real number");
+      "Initial Investment Amount (in $): ", mini_utils::isPositiveRealNum,
+      "positive real number", false, trimUserFormatting);
   m_monthlyDeposit = mini_utils::getValidatedInput<double>(
-      "Monthly Deposit: ", mini_utils::isPositiveRealNum,
-      "positive real number");
+      "Monthly Deposit (in $): ", mini_utils::isPositiveRealNum,
+      "positive real number", false, trimUserFormatting);
   m_annualRate = mini_utils::getValidatedInput<double>(
       "Annual Interest Rate (in %): ", mini_utils::isPositiveRealNum,
-      "positive real number");
+      "positive real number", false, trimUserFormatting);
   m_years = mini_utils::getValidatedInput<int>(
       "Investment Term (Years): ",
-      [min_years, max_years](int input) {
-        return input >= min_years && input <= max_years;
+      [MIN_YEARS, MAX_YEARS](int input) {
+        return input >= MIN_YEARS && input <= MAX_YEARS;
       },
       "integer between " + std::to_string(MIN_INVEST_YEARS) + " and " +
           std::to_string(MAX_INVEST_YEARS));
 }
 
 string InvestmentPlannerCli::getTable(bool withDeposits) {
+  // Setup table formatting
   std::vector<string> headers = {"Year", "End of the Year Balance",
                                  "End of the Year Earned Interest"};
   m_table_formatter.setHeaders(headers);
@@ -83,9 +94,11 @@ string InvestmentPlannerCli::getTable(bool withDeposits) {
          << endl;
     return "";
   }
+
   double lastYearBalance = m_principal;
   const double MONTHLY_DEPOSIT = withDeposits ? m_monthlyDeposit : 0;
   const double ANNUAL_DEPOSIT = MONTHLY_DEPOSIT * 12;
+
   for (int currentYear = 1; currentYear < m_years + 1; ++currentYear) {
     string yearRow = std::to_string(currentYear);
 
@@ -108,17 +121,23 @@ string InvestmentPlannerCli::getTable(bool withDeposits) {
 
     lastYearBalance = yearEndBalance;
   }
-  string outSuffix = (withDeposits ? "" : "out");
-  string header = m_string_formatter.horizontalSeparatorWithSides('-', '+') +
-                  "\n" +
-                  m_string_formatter.formatCentered(
-                      "Balance and Interest With" + outSuffix +
-                          " Additional Monthly Deposits",
-                      '|') +
-                  "\n";
-  string result = header + m_table_formatter.render();
+  const string OUT_SUFFIX = (withDeposits ? "" : "out");
+  const string HEADER =
+      m_string_formatter.horizontalSeparatorWithSides('-', '+') + "\n" +
+      m_string_formatter.formatCentered("Balance and Interest With" +
+                                            OUT_SUFFIX +
+                                            " Additional Monthly Deposits",
+                                        '|') +
+      "\n";
+
+  // Ideally, we can defer cleaning table and just return the result,
+  // but defer implementation would overcomplicate things.
+  const string RESULT = HEADER + m_table_formatter.render();
+
+  // Clean table
   m_table_formatter.clearRows();
-  return result;
+
+  return RESULT;
 }
 
 void InvestmentPlannerCli::pressToContinue() {

@@ -23,7 +23,7 @@ class InvestmentPlannerCli {
 
  private:
   const int MIN_INVEST_YEARS = 1;
-  const int MAX_INVEST_YEARS = 50;
+  const int MAX_INVEST_YEARS = 250;
   int m_width;
   double m_principal;
   double m_monthlyDeposit;
@@ -40,6 +40,9 @@ class InvestmentPlannerCli {
 
   // Make necessary calculations based on user input and render output table
   std::string getTable(bool withDeposits);
+
+  // Trims spaces around the string and '$' and '%' in front of the string.
+  static std::string trimUserFormatting(const std::string& ORIG_STR);
 };
 }  // namespace airgead_investment_planner_cli
 
