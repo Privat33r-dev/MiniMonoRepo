@@ -16,8 +16,8 @@ class DepositCalculator {
 class InvestmentPlannerCli {
  public:
   InvestmentPlannerCli(int t_width = DEFAULT_WIDTH, double t_principal = 0,
-                    double t_monthlyDeposit = 0, double t_annualRate = 0,
-                    int t_years = 0);
+                       double t_monthlyDeposit = 0, double t_annualRate = 0,
+                       int t_years = 0);
   // Start CLI session with user
   void startCli();
 

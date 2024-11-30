@@ -42,8 +42,8 @@ long double DepositCalculator::calculateCompoundInterest(
 }
 
 InvestmentPlannerCli::InvestmentPlannerCli(int t_width, double t_principal,
-                                     double t_monthlyDeposit,
-                                     double t_annualRate, int t_years)
+                                           double t_monthlyDeposit,
+                                           double t_annualRate, int t_years)
     : m_width(t_width),
       m_string_formatter(t_width),
       m_table_formatter(t_width),
