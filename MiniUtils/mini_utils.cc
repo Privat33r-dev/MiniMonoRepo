@@ -115,7 +115,8 @@ string StringFormatter::formatSideBorder(const string& LABEL,
                               BORDER_CHAR);
 }
 
-string StringFormatter::toStringWithPrecision(double value, int precision) const {
+string StringFormatter::toStringWithPrecision(double value,
+                                              int precision) const {
   std::ostringstream oss;
   oss << std::fixed << std::setprecision(precision) << value;
   return oss.str();
@@ -198,11 +199,28 @@ bool isPositiveRealNum(double number) {
 }
 
 string trim(const string& STR) {
-  const auto START = STR.find_first_not_of(" \t\n\r");
-  if (START == std::string::npos) return "";  // String is all whitespace
+  size_t first = 0;
+  size_t last = STR.size();
 
-  const auto END = STR.find_last_not_of(" \t\n\r");
-  return STR.substr(START, END - START + 1);
+  // Skip leading whitespaces
+  while (first < last && std::isspace(STR.at(first))) {
+    ++first;
+  }
+
+  // All characters are whitespace
+  if (first == last) {
+    return "";
+  }
+
+  // Skip trailing whitespaces
+  while (last > first && std::isspace(STR.at(last - 1))) {
+    --last;
+  }
+
+  // Return the trimmed substring,
+  // always a new copy, even if string matches original,
+  // to avoid unexpected behavior
+  return STR.substr(first, last - first);
 }
 
 }  // namespace mini_utils

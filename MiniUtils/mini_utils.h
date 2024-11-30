@@ -82,16 +82,25 @@ void clearInput();
 // Prompts the user to input a value, validates it, and ensures it meets
 // specified criteria.
 //
-// T: The expected input type (e.g., int, double, string).
-// PROMPT: Message to display when asking for input.
-// validator: A function that checks if the input meets specific conditions.
-// criteriaDescription: A short explanation of the validation criteria for error
-// messages (default is "value").
-// strictMode: If true, disallows extra characters after the expected input.
+// T:
+//   The expected input type (e.g., int, double, string).
+// PROMPT:
+//   Message to display when asking for input.
+// validator:
+//   A function that checks if the input meets specific conditions.
+// criteriaDescription:
+//   A short explanation of the validation criteria for error messages.
+// strictMode:
+//   If true, disallows extra characters after the expected input. Defaults to
+//   false.
+// preprocess:
+//   A function that preprocesses the input string before parsing. Defaults to
+//   trim.
 template <typename T>
-T getValidatedInput(const string& PROMPT, std::function<bool(T)> validator,
-                    const string& CRITERIA_DESCRIPTION = "value",
-                    bool strictMode = false) {
+T getValidatedInput(
+    const string& PROMPT, std::function<bool(T)> validator,
+    const string& CRITERIA_DESCRIPTION = "value", bool strictMode = false,
+    std::function<std::string(const std::string&)> preprocess = trim) {
   T input;
   bool isInputValid = false;
 
@@ -100,8 +109,10 @@ T getValidatedInput(const string& PROMPT, std::function<bool(T)> validator,
     string rawInput = "";
     getline(std::cin, rawInput);
 
-    // Trim raw input and attempt to convert to the desired type
-    rawInput = trim(rawInput);
+    // Preprocess input, e.g. trim spaces
+    rawInput = preprocess(rawInput);
+
+    // Attempt to convert input to the desired type
     std::stringstream inputStream(rawInput);
 
     // Attempt to extract the input
