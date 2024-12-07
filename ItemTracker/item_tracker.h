@@ -28,7 +28,7 @@ class ItemTracker {
   std::unordered_map<std::string, int> GetItems() const;
 
  private:
-  std::unordered_map<std::string, int> items_;
+  std::unordered_map<std::string, int> m_items;
 };
 
 class ItemTrackerCli {
@@ -46,10 +46,10 @@ class ItemTrackerCli {
   void ListItemsWithFrequencies() const;
   void ListItemHistogram() const;
 
-  std::string input_file_name_;
-  std::string output_file_name_;
-  ItemTracker item_tracker_;
-  mini_utils::StringFormatter formatter_;
+  std::string m_inputFileName;
+  std::string m_outputFileName;
+  ItemTracker m_itemTracker;
+  mini_utils::StringFormatter m_formatter;
 };
 
 }  // namespace item_tracker
