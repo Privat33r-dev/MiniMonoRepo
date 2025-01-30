@@ -2,6 +2,8 @@
 #include "mini_utils.h"
 
 #include <algorithm>
+#include <cmath>
+#include <limits>
 #include <iomanip>
 #include <iostream>
 #include <sstream>

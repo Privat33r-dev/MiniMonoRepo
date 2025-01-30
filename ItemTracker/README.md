@@ -1,45 +1,15 @@
 # Item Tracker CLI
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Part below is a part of the assignment
-
 ## Project Summary
 
-This project is a command-line tool designed to track and analyze items from an input file or stream. At its core, the program counts occurrences of items and provides users with functionality to search for specific items frequency, list all tracked items with their frequencies, and even display a histogram. The goal of this project was to create a simple utility to visualize item frequency data while adhering to clean and maintainable coding practices.
+This project is a command-line tool designed to track and analyze items from an input file or stream. At its core, the program counts occurrences of items and provides users with functionality to search for specific items, list all tracked items with their frequencies, and even display a histogram. The goal of this project was to create a simple yet powerful utility to manage and visualize item frequency data while adhering to clean and maintainable coding practices.
 
 ## Achievements
 
-I’m particularly proud of several aspects of this project:
-- **Test Coverage:** The project has robust [test coverage](../ItemTrackerTest/). Each core feature is thoroughly tested to ensure reliability and correctness.
-- **Code Quality:** The implementation follows the **SOLID principles** and adheres to the **Google C++ Style Guide**, making the code base consistent, maintainable, readable, and professional.
-- **Maintainability:** I focused on keeping the code modular, with clear separation of responsibilities between classes like `ItemTracker` and `ItemTrackerCli`. Moreover, the `MiniUtils` library provided utilities required across all the projects, which allowed me to keep implementation DRY.
+I am particularly proud of several aspects of this project:
+- **Test Coverage:** The project has robust test coverage. Each core feature is thoroughly tested to ensure reliability and correctness.
+- **Code Quality:** The implementation follows the **SOLID principles** and adheres to the **Google C++ Style Guide**, making the code base maintainable, readable, and professional.
+- **Maintainability:** I focused on keeping the code modular, with clear separation of responsibilities between classes like `ItemTracker` and `ItemTrackerCli`.
 
 ## Areas for Improvement
 
