@@ -1,14 +1,14 @@
 /*
- * Airgead Investment Planner
+ * Investment Planner
  */
-#include "airgead_investment_planner_cli.h"
+#include "investment_planner_cli.h"
 
 #include <cmath>
 #include <iostream>
 
 #include "mini_utils.h"
 
-namespace airgead_investment_planner_cli {
+namespace investment_planner_cli {
 using std::cout;
 using std::endl;
 using std::string;
@@ -150,7 +150,7 @@ void InvestmentPlannerCli::pressToContinue() {
 void InvestmentPlannerCli::startCli() {
   const char FORMAT_CHAR = '-';
   cout << m_string_formatter.horizontalSeparator(FORMAT_CHAR) << endl
-       << m_string_formatter.formatFullBorder("Airgead Investment Calculator",
+       << m_string_formatter.formatFullBorder("Compound Interest Calculator",
                                               FORMAT_CHAR)
        << endl
        << m_string_formatter.horizontalSeparator(FORMAT_CHAR) << endl
@@ -161,4 +161,4 @@ void InvestmentPlannerCli::startCli() {
 
   cout << getTable(false) << endl << getTable(true) << endl;
 }
-}  // namespace airgead_investment_planner_cli
+}  // namespace investment_planner_cli

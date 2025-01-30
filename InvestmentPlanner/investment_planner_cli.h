@@ -1,8 +1,8 @@
 #include "mini_utils.h"
-#ifndef AIRGEAD_INVESTMENT_PLANNER_CLI_H
-#define AIRGEAD_INVESTMENT_PLANNER_CLI_H
+#ifndef INVESTMENT_PLANNER_CLI_H
+#define INVESTMENT_PLANNER_CLI_H
 
-namespace airgead_investment_planner_cli {
+namespace investment_planner_cli {
 const int DEFAULT_WIDTH = 80;
 
 class DepositCalculator {
@@ -44,6 +44,6 @@ class InvestmentPlannerCli {
   // Trims spaces around the string and '$' and '%' in front of the string.
   static std::string trimUserFormatting(const std::string& ORIG_STR);
 };
-}  // namespace airgead_investment_planner_cli
+}  // namespace investment_planner_cli
 
-#endif  // AIRGEAD_INVESTMENT_PLANNER_CLI_H
+#endif  // INVESTMENT_PLANNER_CLI_H

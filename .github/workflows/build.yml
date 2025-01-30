@@ -1,4 +1,4 @@
-name: MSBuild
+name: CI
 
 on:
   push:
@@ -15,64 +15,89 @@ on:
       - ".gitignore"
     branches:
       - master
-
+  release:
+    types: [created]  # triggers on new tagged release creation
 
 env:
-  SOLUTION_FILE_PATH: "MiniProjects MonoRepo.sln"
-  BUILD_CONFIGURATION: Release
+  BUILD_TYPE: Release
 
 permissions:
   contents: read
 
 jobs:
   build:
-    runs-on: windows-latest
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Cache NuGet packages
-      uses: actions/cache@v4
-      with:
-        path: |
-          ${{ github.workspace }}/packages
-          ~\.nuget\packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v2
+      # Cache for ccache, downloaded packages, etc.
+      - name: Cache build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/CMake
+            ~/.ccache
+            ~/.nuget/packages
+          key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-cmake-
 
-    - name: Restore NuGet packages
-      run: nuget restore "${{env.SOLUTION_FILE_PATH}}"
+      # On Linux, install build essentials: Ninja + ccache
+      - name: Install Dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build ccache
 
-    - name: Build x64
-      id: build_x64
-      run: |
-        msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=x64 "${{ env.SOLUTION_FILE_PATH }}"
-        $x64_exe = (Get-ChildItem -Path "${{ github.workspace }}/x64/${{ env.BUILD_CONFIGURATION }}" -Filter *.exe -Recurse).FullName -replace '\\\\', '/'
-        echo "x64_exe=$x64_exe" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      # On Windows, ensure MSVC is in PATH
+      - name: Setup MSVC environment (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Build x86
-      id: build_x86
-      run: |
-        msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=x86 "${{ env.SOLUTION_FILE_PATH }}"
-        $x86_exe = (Get-ChildItem -Path "${{ github.workspace }}/${{ env.BUILD_CONFIGURATION }}" -Filter *.exe -Recurse).FullName -replace '\\\\', '/'
-        echo "x86_exe=$x86_exe" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-        
+      - name: Configure CMake
+        run: cmake -S . -B build -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+
+      - name: Build with CMake
+        run: cmake --build build --parallel
+
+      - name: Run Tests
+        run: |
+          cd build
+          ctest --output-on-failure
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.os }}-build-artifacts"
+          path: build/
+          retention-days: 7
+
   release:
+    name: Release
     needs: build
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v4
+    runs-on: ubuntu-latest
 
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: |
-          ${{ needs.build.outputs.x64_exe }}
-          ${{ needs.build.outputs.x86_exe }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: build_artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build_artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,6 +1,3 @@
-// Important: pch.h import MUST always be on top
-#include "pch.h"
-
 #include "item_tracker.h"
 
 #include <gtest/gtest.h>
