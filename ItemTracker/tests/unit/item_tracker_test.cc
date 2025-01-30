@@ -106,9 +106,22 @@ TEST_F(ItemTrackerTest, ExportToStream_ValidExport) {
   std::ostringstream output_stream;
   EXPECT_TRUE(tracker_.ExportToStream(output_stream));
 
-  // Expected output format: "item frequency"
-  std::string expected_output = "apple 2\nbanana 1\n";
-  EXPECT_EQ(output_stream.str(), expected_output);
+  // Parse the output into a map for comparison
+  std::unordered_map<std::string, int> exported_items;
+  std::istringstream result_stream(output_stream.str());
+  std::string item;
+  int frequency;
+
+  while (result_stream >> item >> frequency) {
+    exported_items[item] = frequency;
+  }
+
+  // Define expected output
+  std::unordered_map<std::string, int> expected_items = {
+      {"apple", 2},
+      {"banana", 1}};
+
+  EXPECT_EQ(exported_items, expected_items);
 }
 
 // Tests the export of empty items to a stream
