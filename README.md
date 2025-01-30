@@ -11,3 +11,8 @@ A CLI application that calculates compound interest to help users manage their f
 
 ## [Item Tracker](ItemTracker)
 CLI tool to track, analyze, and export item frequencies from input files.
+
+### Contribution Guide
+To achieve maintainability and readability, the project follows the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
+
+Contributions are welcome. For instruction, see [Contributing to a Project on GitHub](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project).

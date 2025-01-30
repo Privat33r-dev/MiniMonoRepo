@@ -23,7 +23,7 @@ int main(int argc, const char* argv[]) {
     parser.AddOption<int>("--width", console_width, "Console width (default: 80)", false);
 
     // Parse CLI arguments
-    //parser.Parse(argc, argv);
+    parser.Parse(argc, argv);
 
     // Initialize and start CLI application
     item_tracker::ItemTrackerCli cli(input_file, output_file, console_width);
