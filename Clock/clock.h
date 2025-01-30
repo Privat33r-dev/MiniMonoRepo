@@ -27,12 +27,6 @@ class Clock {
   // clocks
   void printStyledBorder(bool doubleBorder = false);
 
-  // Get formatted time in 12-hour formats
-  string getFormattedTime12Hours() const;
-
-  // Get formatted time in 24-hour formats
-  string getFormattedTime24Hours() const;
-
   // Adjust the time by carrying over values. For example, if seconds >= 60,
   // they will be converted to minutes.
   void adjustTime();
@@ -65,6 +59,13 @@ class Clock {
   // Helper to get 12- or 24-hours formatted time
   string formatTime(unsigned short hours, const string& PERIOD,
                     unsigned short minutes, unsigned short seconds) const;
+
+
+  // Get formatted time in 12-hour formats
+  string getFormattedTime12Hours() const;
+
+  // Get formatted time in 24-hour formats
+  string getFormattedTime24Hours() const;
 
   // Start the command-line interface (CLI) for interacting with the clock
   void startCli();

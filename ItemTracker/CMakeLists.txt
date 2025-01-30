@@ -38,7 +38,7 @@ if(BUILD_TESTS)
 
     # Now create our test executable
     add_executable(ItemTrackerTest
-            item_tracker_test.cc
+            tests/unit/item_tracker_test.cc
     )
     target_link_libraries(ItemTrackerTest
             PRIVATE
