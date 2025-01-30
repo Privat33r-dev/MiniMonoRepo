@@ -60,8 +60,9 @@ class CliParser {
    * @brief Parses command-line arguments and sets values.
    * @param argc Argument count from main.
    * @param argv Argument values from main.
+   * @returns EXIT_SUCCESS if arguments are valid or EXIT_FAILURE
    */
-  void Parse(int argc, const char* argv[]);
+  int Parse(int argc, const char* argv[]);
 
   /**
    * @brief Prints usage instructions.

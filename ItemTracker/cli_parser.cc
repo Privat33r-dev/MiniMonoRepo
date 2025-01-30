@@ -4,7 +4,7 @@ namespace item_tracker {
 
 CliParser::CliParser(const std::string& app_name) : app_name_(app_name) {}
 
-void CliParser::Parse(int argc, const char* argv[]) {
+int CliParser::Parse(int argc, const char* argv[]) {
   std::map<std::string, bool> seen_options;
 
   for (int i = 1; i < argc; ++i) {
@@ -16,10 +16,11 @@ void CliParser::Parse(int argc, const char* argv[]) {
         seen_options[arg] = true;
       } else {
         std::cerr << "Error: Missing value for option " << arg << "\n";
-        exit(1);
+        return EXIT_FAILURE;
       }
     } else {
       HandleUnknownArgument(arg);
+      return EXIT_FAILURE;
     }
   }
 
@@ -28,15 +29,16 @@ void CliParser::Parse(int argc, const char* argv[]) {
     if (is_required && seen_options.find(option) == seen_options.end()) {
       std::cerr << "Error: Missing required option " << option << "\n";
       PrintHelp();
-      exit(1);
+      return EXIT_FAILURE;
     }
   }
+
+  return EXIT_SUCCESS;
 }
 
 void CliParser::HandleUnknownArgument(const std::string& arg) {
   std::cerr << "Error: Unknown argument '" << arg << "'\n";
   PrintHelp();
-  exit(1);
 }
 
 void CliParser::PrintHelp() const {

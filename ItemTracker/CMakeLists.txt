@@ -40,9 +40,10 @@ if(BUILD_TESTS)
 
     # Find all test source files automatically
     file(GLOB UNIT_TEST_SOURCES tests/unit/*.cc)
+    file(GLOB INTEGRATION_TEST_SOURCES tests/integration/*.cc)
 
     # Create a single test executable
-    add_executable(ItemTrackerTest ${UNIT_TEST_SOURCES})
+    add_executable(ItemTrackerTest ${UNIT_TEST_SOURCES} ${INTEGRATION_TEST_SOURCES})
 
     target_link_libraries(ItemTrackerTest
             PRIVATE
