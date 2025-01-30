@@ -5,6 +5,8 @@ option(BUILD_TESTS "Enable building tests" ON)  # or OFF by default
 
 # 1) Create a library with your core logic
 add_library(ItemTrackerLib STATIC
+        cli_parser.cc
+        cli_parser.h
         item_tracker.cc
         item_tracker.h
 )
@@ -36,13 +38,16 @@ if(BUILD_TESTS)
     # Actually fetch and add googletest to our build
     FetchContent_MakeAvailable(googletest)
 
-    # Now create our test executable
-    add_executable(ItemTrackerTest
-            item_tracker_test.cc
-    )
+    # Find all test source files automatically
+    file(GLOB UNIT_TEST_SOURCES tests/unit/*.cc)
+    file(GLOB INTEGRATION_TEST_SOURCES tests/integration/*.cc)
+
+    # Create a single test executable
+    add_executable(ItemTrackerTest ${UNIT_TEST_SOURCES} ${INTEGRATION_TEST_SOURCES})
+
     target_link_libraries(ItemTrackerTest
             PRIVATE
-            ItemTrackerLib     # link your core logic
+            ItemTrackerLib     # link core logic
             gtest              # link GTest
             gtest_main         # link GTest main if you prefer
     )
